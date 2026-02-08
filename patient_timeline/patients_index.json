@@ -1,0 +1,17 @@
+{
+  "patients": [
+    {
+      "patient_id": "P001",
+      "patient_name": "Test1",
+      "age": 50,
+      "gender": "Male",
+      "medical_history": [
+        "Heart Problem"
+      ],
+      "created_date": "2026-02-05T10:27:53.882926",
+      "total_visits": 2,
+      "last_visit": "2026-02-05T10:41:25.085079"
+    }
+  ],
+  "total": 1
+}

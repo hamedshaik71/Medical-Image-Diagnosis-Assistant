@@ -1,0 +1,14 @@
+{
+    "HamedShaik_Brain Tumor_20260207": [
+        {
+            "role": "user",
+            "content": "What is happening to me!?",
+            "timestamp": "2026-02-07T16:52:12.519342"
+        },
+        {
+            "role": "assistant",
+            "content": "**Regarding Brain Tumor:**\n\nHeadaches, visual disturbance, seizures\n\nCurrent confidence: 100.0%\n\nWhat specific aspect would you like to discuss?",
+            "timestamp": "2026-02-07T16:52:12.519342"
+        }
+    ]
+}

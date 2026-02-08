@@ -1,215 +1,2654 @@
 {
   "Pneumonia": {
-    "description": "Pneumonia is an infection causing inflammation in the air sacs (alveoli) of one or both lungs. These sacs may fill with fluid or pus, leading to respiratory symptoms.",
+    "description": "Pneumonia is a serious respiratory infection that causes inflammation in the air sacs (alveoli) of one or both lungs. These sacs may fill with fluid or pus (purulent material), causing cough with phlegm, fever, chills, and difficulty breathing. It can range from mild to life-threatening and is most serious for infants, young children, people older than 65, and those with weakened immune systems or underlying health conditions.",
     "model_config": {
-      "path": "models/pneumonia_model.keras",
       "size": [150, 150]
     },
     "labels": ["Normal", "Pneumonia"],
     "details": {
       "Normal": {
-        "info": "The chest X-ray analysis suggests the lungs appear clear, with no distinct radiological signs typically associated with pneumonia.",
+        "info": "The chest X-ray analysis suggests the lungs appear clear, with no distinct radiological signs typically associated with pneumonia. The lung fields show normal aeration, clear costophrenic angles, and no visible consolidations or infiltrates.",
         "symptoms": [],
         "causes": [],
-        "treatment_overview": "No treatment specific to pneumonia is indicated.",
+        "treatment_overview": "No treatment specific to pneumonia is indicated. Maintain healthy lifestyle practices.",
         "diagnosis_methods": [],
-        "prevention": []
+        "prevention": ["Annual flu vaccination", "Pneumococcal vaccination", "Good hand hygiene", "Avoid smoking", "Maintain strong immune system"],
+        "medications": []
       },
       "Pneumonia": {
-        "info": "The chest X-ray analysis indicates features (like opacities or consolidations) that are consistent with pneumonia.",
-        "symptoms": ["Cough (productive)", "Fever/chills", "Shortness of breath", "Chest pain", "Fatigue", "Loss of appetite", "Confusion (elderly)"],
-        "causes": ["Bacteria (e.g., Streptococcus pneumoniae)", "Viruses (e.g., influenza, RSV, SARS-CoV-2)", "Fungi", "Aspiration"],
-        "treatment_overview": "Depends on type/severity (antibiotics for bacterial, antivirals/supportive for viral). **Consult a doctor.**",
-        "diagnosis_methods": ["History/Physical", "Chest X-ray", "Blood tests", "Sputum test", "Pulse oximetry"],
-        "prevention": ["Vaccinations", "Hygiene", "Not smoking", "Manage chronic conditions"]
+        "info": "The chest X-ray analysis indicates features (like opacities, consolidations, or infiltrates) that are consistent with pneumonia. Areas of increased density suggest fluid or inflammatory material in the lung tissue.",
+        "symptoms": [
+          "Productive cough with phlegm (yellow, green, or bloody)",
+          "High fever (up to 105°F/40.5°C) with chills and rigors",
+          "Shortness of breath and rapid, shallow breathing",
+          "Sharp or stabbing chest pain that worsens with breathing or coughing",
+          "Fatigue and generalized weakness",
+          "Loss of appetite and nausea",
+          "Confusion or altered mental status (especially in elderly)",
+          "Excessive sweating and clammy skin",
+          "Headache and muscle aches",
+          "Bluish lips or fingernails (cyanosis) in severe cases",
+          "Rapid heartbeat (tachycardia)"
+        ],
+        "causes": [
+          "Bacterial: Streptococcus pneumoniae (most common), Haemophilus influenzae, Staphylococcus aureus, Klebsiella pneumoniae, Legionella pneumophila, Mycoplasma pneumoniae",
+          "Viral: Influenza A and B, Respiratory Syncytial Virus (RSV), SARS-CoV-2 (COVID-19), Adenovirus, Rhinovirus, Parainfluenza",
+          "Fungal: Pneumocystis jirovecii (in immunocompromised), Histoplasma, Coccidioides, Aspergillus",
+          "Aspiration: Inhaling food, drink, vomit, or saliva into lungs",
+          "Hospital-acquired (HAP): Often more resistant organisms",
+          "Ventilator-associated pneumonia (VAP)",
+          "Risk factors: Smoking, chronic lung disease, weakened immune system, recent viral infection"
+        ],
+        "treatment_overview": "Treatment depends on the type and severity of pneumonia. Bacterial pneumonia requires antibiotics, viral pneumonia may need antivirals or supportive care, and fungal pneumonia requires antifungal medications. Hospitalization may be needed for severe cases. **Always consult a healthcare provider for proper diagnosis and treatment.**",
+        "diagnosis_methods": [
+          "Medical history and physical examination",
+          "Chest X-ray (PA and lateral views)",
+          "CT scan of chest (for detailed imaging)",
+          "Complete blood count (CBC)",
+          "Blood cultures",
+          "Sputum culture and Gram stain",
+          "Pulse oximetry (oxygen saturation)",
+          "Arterial blood gas (ABG) analysis",
+          "Procalcitonin levels",
+          "Urinary antigen tests (Legionella, Pneumococcus)",
+          "Bronchoscopy with BAL (in severe/atypical cases)"
+        ],
+        "prevention": [
+          "Pneumococcal vaccines (PCV13, PPSV23)",
+          "Annual influenza vaccination",
+          "COVID-19 vaccination",
+          "Frequent handwashing with soap",
+          "Avoid smoking and secondhand smoke",
+          "Maintain good oral hygiene",
+          "Manage chronic conditions (diabetes, COPD, heart disease)",
+          "Avoid close contact with sick individuals",
+          "Practice respiratory hygiene (cover coughs/sneezes)",
+          "Adequate rest and nutrition"
+        ],
+        "medications": {
+          "antibiotics": [
+            {
+              "name": "Amoxicillin",
+              "dosage": "500mg-1g every 8 hours",
+              "duration": "5-7 days",
+              "notes": "First-line for community-acquired pneumonia (CAP)"
+            },
+            {
+              "name": "Amoxicillin-Clavulanate (Augmentin)",
+              "dosage": "875mg/125mg every 12 hours",
+              "duration": "5-7 days",
+              "notes": "For resistant organisms"
+            },
+            {
+              "name": "Azithromycin (Z-Pack)",
+              "dosage": "500mg day 1, then 250mg days 2-5",
+              "duration": "5 days",
+              "notes": "For atypical pneumonia (Mycoplasma, Chlamydia)"
+            },
+            {
+              "name": "Doxycycline",
+              "dosage": "100mg every 12 hours",
+              "duration": "5-7 days",
+              "notes": "Alternative for atypical pathogens"
+            },
+            {
+              "name": "Levofloxacin",
+              "dosage": "750mg once daily",
+              "duration": "5 days",
+              "notes": "Respiratory fluoroquinolone for severe CAP"
+            },
+            {
+              "name": "Moxifloxacin",
+              "dosage": "400mg once daily",
+              "duration": "5-7 days",
+              "notes": "Alternative fluoroquinolone"
+            },
+            {
+              "name": "Ceftriaxone",
+              "dosage": "1-2g IV once daily",
+              "duration": "5-7 days",
+              "notes": "For hospitalized patients"
+            },
+            {
+              "name": "Vancomycin",
+              "dosage": "15-20mg/kg IV every 8-12 hours",
+              "duration": "7-14 days",
+              "notes": "For MRSA pneumonia"
+            },
+            {
+              "name": "Piperacillin-Tazobactam",
+              "dosage": "4.5g IV every 6 hours",
+              "duration": "7-14 days",
+              "notes": "For hospital-acquired pneumonia"
+            }
+          ],
+          "antivirals": [
+            {
+              "name": "Oseltamivir (Tamiflu)",
+              "dosage": "75mg twice daily",
+              "duration": "5 days",
+              "notes": "For influenza pneumonia, start within 48 hours"
+            },
+            {
+              "name": "Remdesivir",
+              "dosage": "200mg IV day 1, then 100mg daily",
+              "duration": "5-10 days",
+              "notes": "For severe COVID-19 pneumonia"
+            },
+            {
+              "name": "Paxlovid (Nirmatrelvir/Ritonavir)",
+              "dosage": "300mg/100mg twice daily",
+              "duration": "5 days",
+              "notes": "For mild-moderate COVID-19"
+            }
+          ],
+          "antifungals": [
+            {
+              "name": "Fluconazole",
+              "dosage": "200-400mg daily",
+              "duration": "2-6 weeks",
+              "notes": "For mild fungal pneumonia"
+            },
+            {
+              "name": "Voriconazole",
+              "dosage": "200mg twice daily",
+              "duration": "6-12 weeks",
+              "notes": "For Aspergillus pneumonia"
+            },
+            {
+              "name": "Trimethoprim-Sulfamethoxazole",
+              "dosage": "15-20mg/kg/day (TMP component)",
+              "duration": "21 days",
+              "notes": "For Pneumocystis pneumonia"
+            }
+          ],
+          "supportive": [
+            {
+              "name": "Acetaminophen (Tylenol)",
+              "dosage": "500-1000mg every 4-6 hours",
+              "max_daily": "3000-4000mg",
+              "notes": "For fever and pain relief"
+            },
+            {
+              "name": "Ibuprofen",
+              "dosage": "200-400mg every 4-6 hours",
+              "max_daily": "1200mg (OTC), 3200mg (prescription)",
+              "notes": "Anti-inflammatory and antipyretic"
+            },
+            {
+              "name": "Guaifenesin (Mucinex)",
+              "dosage": "200-400mg every 4 hours",
+              "max_daily": "2400mg",
+              "notes": "Expectorant to loosen mucus"
+            },
+            {
+              "name": "Dextromethorphan",
+              "dosage": "10-20mg every 4 hours",
+              "max_daily": "120mg",
+              "notes": "Cough suppressant (use cautiously)"
+            },
+            {
+              "name": "Albuterol inhaler",
+              "dosage": "2 puffs every 4-6 hours as needed",
+              "notes": "For bronchospasm and wheezing"
+            },
+            {
+              "name": "Supplemental Oxygen",
+              "dosage": "Titrate to SpO2 92-96%",
+              "notes": "For hypoxemia"
+            }
+          ],
+          "corticosteroids": [
+            {
+              "name": "Dexamethasone",
+              "dosage": "6mg daily",
+              "duration": "10 days",
+              "notes": "For severe COVID-19 pneumonia requiring oxygen"
+            },
+            {
+              "name": "Prednisone",
+              "dosage": "40-60mg daily",
+              "duration": "5-7 days",
+              "notes": "For COPD exacerbation with pneumonia"
+            }
+          ]
+        },
+        "severity_classification": {
+          "mild": {
+            "description": "Outpatient treatment, no signs of severe pneumonia",
+            "treatment": "Oral antibiotics, rest, hydration"
+          },
+          "moderate": {
+            "description": "May require brief hospitalization",
+            "treatment": "IV antibiotics, oxygen supplementation"
+          },
+          "severe": {
+            "description": "ICU admission required",
+            "treatment": "IV antibiotics, mechanical ventilation, vasopressors"
+          }
+        },
+        "warning_signs": [
+          "High fever >103°F (39.4°C) not responding to medication",
+          "Severe difficulty breathing or rapid breathing",
+          "Confusion or altered mental status",
+          "Bluish discoloration of lips or fingertips",
+          "Persistent chest pain",
+          "Coughing up blood",
+          "Unable to keep fluids down",
+          "Oxygen saturation below 92%"
+        ]
       }
     }
   },
   "Brain Tumor": {
-    "description": "A brain tumor is an abnormal growth of cells within the brain or central spinal canal. They can be benign (non-cancerous) or malignant (cancerous).",
+    "description": "A brain tumor is an abnormal growth of cells within the brain or central spinal canal. Brain tumors can be primary (originating in the brain) or secondary/metastatic (spreading from other body parts). They are classified as benign (non-cancerous, slow-growing) or malignant (cancerous, aggressive). The location, size, and type of tumor determine symptoms and treatment options. Brain tumors can affect brain function by invading or compressing normal brain tissue.",
     "model_config": {
-      "path": "models/brain_tumor_model.keras",
-      "size": [128, 128]
+      "size": [224, 224]
     },
     "labels": ["glioma", "meningioma", "notumor", "pituitary"],
     "details": {
       "glioma": {
-        "info": "Analysis of the MRI scan suggests features consistent with a glioma, a type of tumor arising from glial cells.",
-        "symptoms": ["Headaches", "Seizures", "Nausea/vomiting", "Cognitive decline", "Personality changes", "Vision problems", "Speech difficulties", "Motor/sensory loss"],
-        "causes": ["Largely unknown", "Genetic factors (rare)", "Prior radiation therapy"],
-        "treatment_overview": "Varies by type/grade/location. Options: surgery, radiation, chemotherapy, targeted therapy. **Requires specialized medical care.**",
-        "diagnosis_methods": ["Neurological exam", "MRI scan (with contrast)", "CT scan", "Biopsy"],
-        "prevention": ["Largely not preventable"]
+        "info": "Analysis of the MRI scan suggests features consistent with a glioma, a type of tumor arising from glial cells (supportive cells of the brain). Gliomas are classified into grades I-IV based on aggressiveness, with glioblastoma (grade IV) being the most aggressive. They represent about 30% of all brain tumors and 80% of malignant brain tumors.",
+        "symptoms": [
+          "Persistent headaches (often worse in morning)",
+          "Seizures (focal or generalized)",
+          "Progressive nausea and vomiting",
+          "Cognitive decline and memory problems",
+          "Personality and behavioral changes",
+          "Vision problems (blurred, double vision, loss of peripheral vision)",
+          "Speech difficulties (aphasia)",
+          "Motor weakness on one side of body (hemiparesis)",
+          "Sensory changes (numbness, tingling)",
+          "Balance and coordination problems (ataxia)",
+          "Drowsiness and fatigue",
+          "Confusion and disorientation",
+          "Difficulty with concentration",
+          "Mood swings and depression"
+        ],
+        "causes": [
+          "Largely unknown etiology",
+          "Genetic mutations (IDH1, IDH2, TP53, ATRX, EGFR, PTEN)",
+          "Prior radiation therapy to the head",
+          "Rare genetic syndromes: Neurofibromatosis type 1 and 2, Li-Fraumeni syndrome, Turcot syndrome, Tuberous sclerosis",
+          "Family history of glioma (small increased risk)",
+          "Possible environmental factors (under investigation)",
+          "Age: More common in older adults",
+          "Gender: Slightly more common in males"
+        ],
+        "treatment_overview": "Treatment varies based on tumor grade, location, size, and patient health. A multidisciplinary team (neurosurgeon, neuro-oncologist, radiation oncologist) develops an individualized treatment plan. Options include surgery, radiation, chemotherapy, and targeted therapies. **Requires specialized neuro-oncology care at a comprehensive cancer center.**",
+        "diagnosis_methods": [
+          "Comprehensive neurological examination",
+          "MRI with and without contrast (gadolinium)",
+          "MR spectroscopy (MRS)",
+          "Perfusion MRI",
+          "Functional MRI (fMRI)",
+          "CT scan",
+          "PET scan",
+          "Stereotactic biopsy",
+          "Surgical biopsy/resection with histopathology",
+          "Molecular testing (IDH mutation, MGMT methylation, 1p/19q codeletion)",
+          "Electroencephalogram (EEG) for seizures"
+        ],
+        "prevention": [
+          "No known prevention methods",
+          "Avoid unnecessary radiation exposure",
+          "Genetic counseling for hereditary syndromes",
+          "Regular medical checkups",
+          "Report persistent neurological symptoms promptly"
+        ],
+        "medications": {
+          "chemotherapy": [
+            {
+              "name": "Temozolomide (Temodar)",
+              "dosage": "75mg/m² daily during radiation, then 150-200mg/m² days 1-5 of 28-day cycle",
+              "duration": "6-12 cycles after radiation",
+              "notes": "Standard first-line chemotherapy for high-grade gliomas; oral medication"
+            },
+            {
+              "name": "Lomustine (CCNU)",
+              "dosage": "110mg/m² every 6 weeks",
+              "duration": "Until progression",
+              "notes": "Used for recurrent gliomas, often with other agents"
+            },
+            {
+              "name": "Procarbazine",
+              "dosage": "60mg/m² days 8-21 of 8-week cycle",
+              "duration": "As part of PCV regimen",
+              "notes": "Part of PCV regimen for oligodendrogliomas"
+            },
+            {
+              "name": "Vincristine",
+              "dosage": "1.4mg/m² (max 2mg) IV days 8 and 29",
+              "duration": "As part of PCV regimen",
+              "notes": "Part of PCV regimen"
+            },
+            {
+              "name": "Carmustine (BCNU)",
+              "dosage": "150-200mg/m² IV every 6 weeks",
+              "duration": "Until progression",
+              "notes": "Also available as implantable wafer (Gliadel)"
+            },
+            {
+              "name": "Gliadel Wafer",
+              "dosage": "Up to 8 wafers implanted during surgery",
+              "duration": "Single application",
+              "notes": "Carmustine wafers placed in tumor cavity"
+            }
+          ],
+          "targeted_therapy": [
+            {
+              "name": "Bevacizumab (Avastin)",
+              "dosage": "10mg/kg IV every 2 weeks",
+              "duration": "Until progression",
+              "notes": "Anti-VEGF therapy for recurrent glioblastoma"
+            },
+            {
+              "name": "Tumor Treating Fields (TTFields/Optune)",
+              "dosage": "Wear device ≥18 hours/day",
+              "duration": "Continuous",
+              "notes": "FDA-approved for glioblastoma; worn on shaved scalp"
+            }
+          ],
+          "supportive": [
+            {
+              "name": "Dexamethasone",
+              "dosage": "4-16mg daily in divided doses",
+              "duration": "Taper as tolerated",
+              "notes": "Reduces cerebral edema and swelling"
+            },
+            {
+              "name": "Levetiracetam (Keppra)",
+              "dosage": "500-1500mg twice daily",
+              "duration": "Long-term if seizures",
+              "notes": "Preferred anticonvulsant; fewer drug interactions"
+            },
+            {
+              "name": "Lacosamide (Vimpat)",
+              "dosage": "100-200mg twice daily",
+              "duration": "Long-term if seizures",
+              "notes": "Alternative anticonvulsant"
+            },
+            {
+              "name": "Valproic Acid",
+              "dosage": "500-1000mg twice daily",
+              "duration": "Long-term if seizures",
+              "notes": "Also may have anti-tumor effects"
+            },
+            {
+              "name": "Ondansetron (Zofran)",
+              "dosage": "4-8mg every 8 hours as needed",
+              "duration": "During chemotherapy",
+              "notes": "Anti-nausea medication"
+            },
+            {
+              "name": "Omeprazole",
+              "dosage": "20-40mg daily",
+              "duration": "While on steroids",
+              "notes": "Gastroprotection with steroids"
+            },
+            {
+              "name": "Trimethoprim-Sulfamethoxazole",
+              "dosage": "1 DS tablet 3x/week",
+              "duration": "While on chemo/steroids",
+              "notes": "PCP prophylaxis"
+            }
+          ],
+          "pain_management": [
+            {
+              "name": "Acetaminophen",
+              "dosage": "500-1000mg every 6 hours",
+              "max_daily": "3000mg",
+              "notes": "First-line for headache"
+            },
+            {
+              "name": "Morphine",
+              "dosage": "Individualized",
+              "notes": "For moderate to severe pain"
+            },
+            {
+              "name": "Gabapentin",
+              "dosage": "300-900mg three times daily",
+              "notes": "For neuropathic pain"
+            }
+          ]
+        },
+        "glioma_grades": {
+          "grade_I": {
+            "name": "Pilocytic Astrocytoma",
+            "prognosis": "Generally curable with surgery",
+            "treatment": "Surgical resection, observation"
+          },
+          "grade_II": {
+            "name": "Diffuse Astrocytoma, Oligodendroglioma",
+            "prognosis": "Median survival 5-10+ years",
+            "treatment": "Surgery, radiation, PCV or temozolomide"
+          },
+          "grade_III": {
+            "name": "Anaplastic Astrocytoma/Oligodendroglioma",
+            "prognosis": "Median survival 3-5 years",
+            "treatment": "Surgery, radiation, chemotherapy"
+          },
+          "grade_IV": {
+            "name": "Glioblastoma (GBM)",
+            "prognosis": "Median survival 14-16 months",
+            "treatment": "Surgery, radiation + temozolomide, TTFields"
+          }
+        },
+        "warning_signs": [
+          "Sudden severe headache ('worst headache of life')",
+          "New onset seizures or status epilepticus",
+          "Progressive weakness or paralysis",
+          "Sudden vision loss",
+          "Difficulty speaking or understanding speech",
+          "Severe confusion or loss of consciousness",
+          "Signs of herniation (dilated pupil, posturing)"
+        ]
       },
       "meningioma": {
-        "info": "Analysis of the MRI scan suggests features consistent with a meningioma, a tumor arising from the meninges. Often benign.",
-        "symptoms": ["Often asymptomatic initially", "Headaches", "Vision changes", "Hearing loss/tinnitus", "Seizures", "Weakness in limbs", "Loss of smell"],
-        "causes": ["Largely unknown", "Ionizing radiation", "Genetic factors (NF2)", "More common in women"],
-        "treatment_overview": "Depends on size/location/symptoms. Options: observation, surgery, radiation therapy. **Requires specialized medical care.**",
-        "diagnosis_methods": ["Neurological exam", "MRI scan (with contrast)", "CT scan"],
-        "prevention": ["Largely not preventable"]
+        "info": "Analysis of the MRI scan suggests features consistent with a meningioma, a tumor arising from the meninges (protective membranes covering the brain and spinal cord). Meningiomas are the most common primary brain tumors, representing about 37% of all brain tumors. Most (90%) are benign (WHO Grade I), grow slowly, and are often found incidentally. They are more common in women and typically occur in adults over 40.",
+        "symptoms": [
+          "Often asymptomatic (found incidentally)",
+          "Gradually worsening headaches",
+          "Vision changes (blurred vision, double vision)",
+          "Hearing loss or ringing in ears (tinnitus)",
+          "Seizures",
+          "Progressive weakness in arms or legs",
+          "Memory problems and confusion",
+          "Loss of smell (anosmia)",
+          "Personality or behavioral changes",
+          "Speech difficulties",
+          "Balance problems",
+          "Facial numbness or weakness",
+          "Bulging of one eye (proptosis)"
+        ],
+        "causes": [
+          "Largely unknown etiology",
+          "Previous ionizing radiation to the head",
+          "Neurofibromatosis type 2 (NF2) - genetic condition",
+          "Hormonal factors (more common in women, may grow during pregnancy)",
+          "Genetic mutations (NF2, AKT1, SMO, TRAF7, KLF4)",
+          "Obesity (associated with increased risk)",
+          "Age: More common after age 40",
+          "Gender: 2-3x more common in females"
+        ],
+        "treatment_overview": "Treatment depends on tumor size, location, grade, symptoms, and patient health. Small, asymptomatic meningiomas may be monitored with regular MRI. Symptomatic or growing tumors require intervention. Options include surgery, radiation therapy (including stereotactic radiosurgery), and rarely medical therapy. **Requires specialized neurosurgical evaluation.**",
+        "diagnosis_methods": [
+          "Neurological examination",
+          "MRI with and without contrast (gold standard)",
+          "CT scan (shows calcifications well)",
+          "MR angiography (for vascular involvement)",
+          "Cerebral angiography (preoperative planning)",
+          "PET scan",
+          "Histopathological examination after surgery",
+          "Molecular testing for atypical/malignant types"
+        ],
+        "prevention": [
+          "No known prevention methods",
+          "Avoid unnecessary radiation exposure",
+          "Genetic counseling for NF2 families",
+          "Regular monitoring if diagnosed incidentally",
+          "Maintain healthy weight (possible protective effect)"
+        ],
+        "medications": {
+          "hormonal_therapy": [
+            {
+              "name": "Mifepristone",
+              "dosage": "200mg daily",
+              "duration": "Investigational",
+              "notes": "Progesterone receptor antagonist; limited evidence"
+            }
+          ],
+          "targeted_therapy": [
+            {
+              "name": "Bevacizumab (Avastin)",
+              "dosage": "5-10mg/kg IV every 2 weeks",
+              "duration": "Until progression",
+              "notes": "For recurrent/progressive meningiomas"
+            },
+            {
+              "name": "Sunitinib",
+              "dosage": "50mg daily, 4 weeks on/2 weeks off",
+              "duration": "Until progression",
+              "notes": "For recurrent meningiomas; investigational"
+            },
+            {
+              "name": "Everolimus",
+              "dosage": "10mg daily",
+              "duration": "Investigational",
+              "notes": "mTOR inhibitor; in clinical trials"
+            }
+          ],
+          "chemotherapy": [
+            {
+              "name": "Hydroxyurea",
+              "dosage": "20mg/kg daily",
+              "duration": "Continuous",
+              "notes": "For unresectable recurrent meningiomas; modest benefit"
+            },
+            {
+              "name": "Temozolomide",
+              "dosage": "150-200mg/m² days 1-5 of 28-day cycle",
+              "duration": "Until progression",
+              "notes": "Limited efficacy; for refractory cases"
+            }
+          ],
+          "supportive": [
+            {
+              "name": "Dexamethasone",
+              "dosage": "4-16mg daily",
+              "duration": "Perioperative or for edema",
+              "notes": "Reduces peritumoral edema"
+            },
+            {
+              "name": "Levetiracetam (Keppra)",
+              "dosage": "500-1000mg twice daily",
+              "duration": "If seizures occur",
+              "notes": "Anticonvulsant therapy"
+            },
+            {
+              "name": "Phenytoin",
+              "dosage": "100mg three times daily",
+              "duration": "Perioperative period",
+              "notes": "Seizure prophylaxis around surgery"
+            },
+            {
+              "name": "Acetaminophen",
+              "dosage": "500-1000mg every 6 hours",
+              "notes": "For headache management"
+            },
+            {
+              "name": "Omeprazole",
+              "dosage": "20mg daily",
+              "notes": "Gastroprotection if on steroids"
+            }
+          ]
+        },
+        "meningioma_grades": {
+          "grade_I": {
+            "name": "Benign Meningioma",
+            "percentage": "~80-90%",
+            "prognosis": "Excellent; often cured with complete resection",
+            "treatment": "Surgery or observation; radiosurgery if unresectable"
+          },
+          "grade_II": {
+            "name": "Atypical Meningioma",
+            "percentage": "~5-15%",
+            "prognosis": "Higher recurrence rate",
+            "treatment": "Surgery + radiation therapy"
+          },
+          "grade_III": {
+            "name": "Anaplastic/Malignant Meningioma",
+            "percentage": "~1-3%",
+            "prognosis": "Aggressive; median survival 2-3 years",
+            "treatment": "Surgery + radiation; consider chemotherapy"
+          }
+        },
+        "warning_signs": [
+          "Sudden severe headache",
+          "Rapid vision changes or vision loss",
+          "New onset seizures",
+          "Progressive weakness or numbness",
+          "Sudden confusion or personality change",
+          "Difficulty walking or loss of balance",
+          "Increasing drowsiness or loss of consciousness"
+        ]
       },
       "notumor": {
-        "info": "The MRI scan analysis does not show clear radiological signs indicative of a brain tumor.",
+        "info": "The MRI scan analysis does not show clear radiological signs indicative of a brain tumor. The brain parenchyma appears normal without evidence of mass lesions, abnormal enhancement, midline shift, or hydrocephalus. Normal anatomical structures are preserved.",
         "symptoms": [],
         "causes": [],
-        "treatment_overview": "No tumor-specific treatment indicated.",
+        "treatment_overview": "No tumor-specific treatment indicated. If neurological symptoms persist, further evaluation for other causes may be warranted.",
         "diagnosis_methods": [],
-        "prevention": []
+        "prevention": [
+          "Maintain overall brain health",
+          "Regular exercise and healthy diet",
+          "Avoid head trauma (wear helmets)",
+          "Limit alcohol consumption",
+          "Don't smoke",
+          "Manage cardiovascular risk factors",
+          "Stay mentally and socially active"
+        ],
+        "medications": [],
+        "recommendations": [
+          "Continue regular health checkups",
+          "Report any new neurological symptoms promptly",
+          "Follow up with primary care physician",
+          "Consider baseline MRI for future comparison if indicated"
+        ]
       },
       "pituitary": {
-        "info": "Analysis of the MRI scan suggests features consistent with a pituitary tumor (adenoma). Usually benign.",
-        "symptoms": ["Hormonal imbalances (over/underproduction)", "Headaches", "Vision loss (peripheral)"],
-        "causes": ["Largely unknown", "Rare genetic conditions (MEN 1)"],
-        "treatment_overview": "Depends on hormone production & size. Options: medication, surgery (transsphenoidal), radiation therapy. **Requires specialized care (endocrinologist, neurosurgeon).**",
-        "diagnosis_methods": ["Hormone blood tests", "Vision tests", "MRI scan", "CT scan"],
-        "prevention": ["Largely not preventable"]
+        "info": "Analysis of the MRI scan suggests features consistent with a pituitary tumor (pituitary adenoma). Pituitary adenomas arise from the pituitary gland at the base of the brain and are almost always benign. They are classified as functioning (hormone-secreting) or non-functioning, and by size: microadenomas (<10mm) or macroadenomas (≥10mm). They represent about 10-15% of all brain tumors.",
+        "symptoms": [
+          "Hormonal symptoms (from functioning adenomas):",
+          "- Prolactinoma: Irregular periods, infertility, milk discharge, erectile dysfunction",
+          "- Growth hormone-secreting: Acromegaly (enlarged hands/feet/face), joint pain",
+          "- ACTH-secreting: Cushing's disease (weight gain, moon face, thin skin, diabetes)",
+          "- TSH-secreting: Hyperthyroidism (weight loss, rapid heart, sweating)",
+          "Mass effect symptoms (from larger tumors):",
+          "- Headaches",
+          "- Vision loss (especially peripheral - bitemporal hemianopia)",
+          "- Double vision (diplopia)",
+          "Hormone deficiency symptoms (hypopituitarism):",
+          "- Fatigue and weakness",
+          "- Cold intolerance",
+          "- Low blood pressure",
+          "- Sexual dysfunction",
+          "- Infertility",
+          "Pituitary apoplexy (sudden bleeding): Severe headache, vision loss, hormone crisis"
+        ],
+        "causes": [
+          "Largely unknown etiology",
+          "Sporadic genetic mutations",
+          "Rare hereditary syndromes:",
+          "- Multiple Endocrine Neoplasia type 1 (MEN1)",
+          "- Carney complex",
+          "- McCune-Albright syndrome",
+          "- Familial isolated pituitary adenoma (FIPA)",
+          "AIP gene mutations (familial forms)",
+          "Generally not associated with environmental factors"
+        ],
+        "treatment_overview": "Treatment depends on tumor type, size, hormone production, and symptoms. Prolactinomas are usually treated medically. Other types may require surgery (transsphenoidal approach), radiation therapy, or medical management. **Requires multidisciplinary care from endocrinologist, neurosurgeon, and neuro-ophthalmologist.**",
+        "diagnosis_methods": [
+          "Comprehensive hormone blood tests (prolactin, GH, IGF-1, cortisol, ACTH, TSH, FSH, LH, testosterone/estrogen)",
+          "24-hour urinary free cortisol",
+          "Dexamethasone suppression test",
+          "OGTT for GH (acromegaly)",
+          "MRI of pituitary with contrast (gold standard)",
+          "CT scan",
+          "Visual field testing (perimetry)",
+          "Ophthalmologic examination",
+          "Inferior petrosal sinus sampling (for ACTH adenomas)"
+        ],
+        "prevention": [
+          "No known prevention methods",
+          "Genetic testing and counseling for hereditary syndromes",
+          "Regular monitoring if predisposing syndrome present",
+          "Early reporting of hormonal or visual symptoms"
+        ],
+        "medications": {
+          "prolactinoma": [
+            {
+              "name": "Cabergoline (Dostinex)",
+              "dosage": "0.25-1mg twice weekly",
+              "duration": "Long-term; may attempt discontinuation after 2+ years",
+              "notes": "First-line for prolactinoma; shrinks tumor, normalizes prolactin"
+            },
+            {
+              "name": "Bromocriptine (Parlodel)",
+              "dosage": "1.25-2.5mg 2-3 times daily",
+              "duration": "Long-term",
+              "notes": "Older dopamine agonist; more side effects; safe in pregnancy"
+            }
+          ],
+          "acromegaly": [
+            {
+              "name": "Octreotide LAR (Sandostatin LAR)",
+              "dosage": "20-30mg IM every 4 weeks",
+              "duration": "Long-term",
+              "notes": "Somatostatin analog; first-line medical therapy"
+            },
+            {
+              "name": "Lanreotide (Somatuline Depot)",
+              "dosage": "60-120mg SC every 4 weeks",
+              "duration": "Long-term",
+              "notes": "Alternative somatostatin analog"
+            },
+            {
+              "name": "Pasireotide (Signifor LAR)",
+              "dosage": "40-60mg IM monthly",
+              "duration": "Long-term",
+              "notes": "For resistant cases; higher diabetes risk"
+            },
+            {
+              "name": "Pegvisomant (Somavert)",
+              "dosage": "10-30mg SC daily",
+              "duration": "Long-term",
+              "notes": "GH receptor antagonist; for resistant cases"
+            },
+            {
+              "name": "Cabergoline",
+              "dosage": "0.5-1mg twice weekly",
+              "duration": "Long-term",
+              "notes": "Adjunctive therapy; modest GH lowering"
+            }
+          ],
+          "cushings": [
+            {
+              "name": "Pasireotide (Signifor)",
+              "dosage": "600-900mcg SC twice daily",
+              "duration": "Long-term",
+              "notes": "FDA-approved for Cushing's disease"
+            },
+            {
+              "name": "Cabergoline",
+              "dosage": "1-3mg weekly",
+              "duration": "Long-term",
+              "notes": "Off-label; modest efficacy"
+            },
+            {
+              "name": "Ketoconazole",
+              "dosage": "400-1200mg daily in divided doses",
+              "duration": "As needed",
+              "notes": "Adrenal steroidogenesis inhibitor"
+            },
+            {
+              "name": "Osilodrostat (Isturisa)",
+              "dosage": "2-14mg twice daily",
+              "duration": "Long-term",
+              "notes": "Cortisol synthesis inhibitor"
+            },
+            {
+              "name": "Metyrapone",
+              "dosage": "500-6000mg daily in divided doses",
+              "duration": "As needed",
+              "notes": "Cortisol synthesis inhibitor"
+            },
+            {
+              "name": "Mifepristone (Korlym)",
+              "dosage": "300-1200mg daily",
+              "duration": "Long-term",
+              "notes": "Glucocorticoid receptor blocker; for hyperglycemia"
+            }
+          ],
+          "hormone_replacement": [
+            {
+              "name": "Levothyroxine",
+              "dosage": "25-200mcg daily",
+              "notes": "For secondary hypothyroidism"
+            },
+            {
+              "name": "Hydrocortisone",
+              "dosage": "15-25mg daily in divided doses",
+              "notes": "For secondary adrenal insufficiency"
+            },
+            {
+              "name": "Testosterone (men)",
+              "dosage": "Various formulations",
+              "notes": "For hypogonadism"
+            },
+            {
+              "name": "Estrogen/Progesterone (women)",
+              "dosage": "Various formulations",
+              "notes": "For hypogonadism"
+            },
+            {
+              "name": "Growth Hormone",
+              "dosage": "0.2-0.8mg SC daily",
+              "notes": "For adult GH deficiency"
+            },
+            {
+              "name": "Desmopressin (DDAVP)",
+              "dosage": "10-40mcg intranasally or 0.1-0.4mg orally",
+              "notes": "For diabetes insipidus after surgery"
+            }
+          ],
+          "supportive": [
+            {
+              "name": "Acetaminophen",
+              "dosage": "500-1000mg every 6 hours",
+              "notes": "For headaches"
+            },
+            {
+              "name": "Dexamethasone",
+              "dosage": "Perioperative dosing",
+              "notes": "Stress dose steroids for surgery"
+            }
+          ]
+        },
+        "adenoma_types": {
+          "prolactinoma": {
+            "percentage": "~40% of all pituitary adenomas",
+            "treatment": "Medical therapy first (dopamine agonists)"
+          },
+          "non_functioning": {
+            "percentage": "~30%",
+            "treatment": "Surgery if symptomatic; observation if not"
+          },
+          "gh_secreting": {
+            "percentage": "~15%",
+            "treatment": "Surgery first-line; medical therapy if needed"
+          },
+          "acth_secreting": {
+            "percentage": "~10%",
+            "treatment": "Surgery first-line; medical/radiation for residual"
+          },
+          "tsh_secreting": {
+            "percentage": "~1-2%",
+            "treatment": "Surgery; somatostatin analogs"
+          }
+        },
+        "warning_signs": [
+          "Sudden severe headache",
+          "Sudden vision loss or double vision",
+          "Sudden nausea/vomiting with headache",
+          "Altered mental status",
+          "Signs of adrenal crisis (weakness, hypotension, confusion)",
+          "These may indicate pituitary apoplexy - MEDICAL EMERGENCY"
+        ]
       }
     }
   },
   "Malaria": {
-    "description": "Malaria is a serious disease caused by Plasmodium parasites, transmitted via infected Anopheles mosquito bites.",
+    "description": "Malaria is a life-threatening parasitic disease caused by Plasmodium parasites, transmitted to humans through the bites of infected female Anopheles mosquitoes. There are five species that infect humans: P. falciparum (most deadly), P. vivax (most widespread), P. malariae, P. ovale, and P. knowlesi. Malaria causes cycles of fever, chills, and flu-like illness. Without prompt treatment, P. falciparum malaria can progress to severe illness and death within 24 hours.",
     "model_config": {
-      "path": "models/malaria_model.keras",
       "size": [128, 128]
     },
     "labels": ["Uninfected", "Parasitized"],
     "details": {
       "Uninfected": {
-        "info": "Analysis of the blood cell image suggests no visible malaria parasites.",
+        "info": "Analysis of the blood cell image suggests no visible malaria parasites within the red blood cells. The cells appear normal in morphology without evidence of ring forms, trophozoites, schizonts, or gametocytes.",
         "symptoms": [],
         "causes": [],
-        "treatment_overview": "No malaria treatment indicated.",
+        "treatment_overview": "No malaria treatment indicated. If symptoms suggestive of malaria persist, repeat testing may be warranted.",
         "diagnosis_methods": [],
-        "prevention": []
+        "prevention": [
+          "Use insecticide-treated bed nets (ITNs)",
+          "Apply DEET-containing insect repellent",
+          "Wear long sleeves and pants, especially after dusk",
+          "Use indoor residual spraying (IRS)",
+          "Take antimalarial prophylaxis when traveling to endemic areas",
+          "Eliminate standing water (mosquito breeding sites)",
+          "Use screens on windows and doors"
+        ],
+        "medications": []
       },
       "Parasitized": {
-        "info": "Analysis of the blood cell image shows features consistent with the presence of malaria parasites within red blood cells.",
-        "symptoms": ["Cyclical chills, fever, sweating", "Headache", "Muscle pain", "Fatigue", "Nausea/vomiting"],
-        "causes": ["Plasmodium parasites", "Anopheles mosquito bites"],
-        "treatment_overview": "Requires prompt treatment with prescribed antimalarial drugs. **Medical emergency - seek immediate attention.**",
-        "diagnosis_methods": ["Blood smear microscopy", "Rapid Diagnostic Tests (RDTs)", "PCR"],
-        "prevention": ["Nets (ITNs)", "Spraying (IRS)", "Repellent", "Clothing", "Prophylaxis"]
+        "info": "Analysis of the blood cell image shows features consistent with the presence of malaria parasites within red blood cells. Visible features may include ring-form trophozoites, mature trophozoites, schizonts, or gametocytes depending on the parasite stage and species.",
+        "symptoms": [
+          "Cyclical fever pattern (every 48-72 hours depending on species)",
+          "Shaking chills and rigors",
+          "Profuse sweating",
+          "High fever (up to 106°F/41°C)",
+          "Severe headache",
+          "Muscle and joint pain (myalgia, arthralgia)",
+          "Extreme fatigue and weakness",
+          "Nausea, vomiting, and diarrhea",
+          "Loss of appetite",
+          "Abdominal pain",
+          "Enlarged spleen (splenomegaly)",
+          "Enlarged liver (hepatomegaly)",
+          "Anemia (pallor, weakness)",
+          "Jaundice (yellowing of skin/eyes)",
+          "Severe malaria complications:",
+          "- Cerebral malaria (seizures, coma)",
+          "- Severe anemia",
+          "- Respiratory distress/ARDS",
+          "- Hypoglycemia",
+          "- Renal failure",
+          "- Metabolic acidosis",
+          "- Shock"
+        ],
+        "causes": [
+          "Plasmodium falciparum (most severe, highest mortality, Sub-Saharan Africa)",
+          "Plasmodium vivax (most widespread, can cause relapses)",
+          "Plasmodium malariae (causes chronic infection)",
+          "Plasmodium ovale (similar to vivax, West Africa)",
+          "Plasmodium knowlesi (zoonotic, Southeast Asia)",
+          "Transmission: Bite of infected female Anopheles mosquito",
+          "Other routes: Blood transfusion, organ transplant, shared needles, congenital (mother to fetus)",
+          "Risk factors: Travel to endemic areas, lack of immunity, pregnancy, young children, HIV/AIDS"
+        ],
+        "treatment_overview": "Malaria requires prompt treatment with antimalarial medications. Treatment choice depends on the species, severity, and local drug resistance patterns. Severe malaria requires IV medications and ICU care. **Malaria is a MEDICAL EMERGENCY - seek immediate care. Delays can be fatal.**",
+        "diagnosis_methods": [
+          "Microscopic examination of Giemsa-stained blood smear (gold standard)",
+          "Thick smear (detection, parasite count)",
+          "Thin smear (species identification)",
+          "Rapid Diagnostic Tests (RDTs) - detect parasite antigens",
+          "Polymerase Chain Reaction (PCR) - most sensitive",
+          "Complete blood count (anemia, thrombocytopenia)",
+          "Metabolic panel (glucose, creatinine, electrolytes)",
+          "Liver function tests",
+          "Blood gas analysis (severe cases)",
+          "Lactate levels"
+        ],
+        "prevention": [
+          "Insecticide-treated bed nets (ITNs/LLINs)",
+          "Indoor residual spraying (IRS)",
+          "DEET, picaridin, or IR3535 repellent on exposed skin",
+          "Permethrin-treated clothing",
+          "Protective clothing (long sleeves, pants) after dusk",
+          "Antimalarial chemoprophylaxis for travelers",
+          "Seasonal malaria chemoprevention (SMC) in children",
+          "Intermittent preventive treatment in pregnancy (IPTp)",
+          "Window/door screens, air conditioning",
+          "RTS,S/AS01 vaccine (Mosquirix) for children in endemic areas",
+          "Eliminate standing water near dwellings"
+        ],
+        "medications": {
+          "uncomplicated_falciparum": [
+            {
+              "name": "Artemether-Lumefantrine (Coartem)",
+              "dosage": "Weight-based dosing, 6 doses over 3 days (e.g., 4 tablets per dose for >35kg)",
+              "duration": "3 days",
+              "notes": "First-line ACT; take with fatty food for absorption"
+            },
+            {
+              "name": "Artesunate-Amodiaquine",
+              "dosage": "4mg/kg artesunate + 10mg/kg amodiaquine daily",
+              "duration": "3 days",
+              "notes": "Alternative ACT"
+            },
+            {
+              "name": "Artesunate-Mefloquine",
+              "dosage": "4mg/kg artesunate + 8.3mg/kg mefloquine daily",
+              "duration": "3 days",
+              "notes": "ACT for Southeast Asia"
+            },
+            {
+              "name": "Dihydroartemisinin-Piperaquine (Eurartesim)",
+              "dosage": "Weight-based, once daily",
+              "duration": "3 days",
+              "notes": "Alternative ACT; avoid if cardiac conduction issues"
+            },
+            {
+              "name": "Atovaquone-Proguanil (Malarone)",
+              "dosage": "4 adult tablets daily with food",
+              "duration": "3 days",
+              "notes": "Alternative for non-immune travelers; expensive"
+            }
+          ],
+          "severe_malaria": [
+            {
+              "name": "Artesunate IV/IM",
+              "dosage": "2.4mg/kg at 0, 12, 24 hours, then daily",
+              "duration": "Until oral tolerated (minimum 24h), then complete with oral ACT",
+              "notes": "FIRST-LINE for severe malaria; reduces mortality vs quinine"
+            },
+            {
+              "name": "Quinine IV",
+              "dosage": "Loading: 20mg/kg over 4h, then 10mg/kg every 8h",
+              "duration": "Until oral tolerated, then complete with oral therapy",
+              "notes": "Alternative if artesunate unavailable; monitor cardiac rhythm"
+            },
+            {
+              "name": "Quinidine IV",
+              "dosage": "10mg/kg loading over 1-2h, then 0.02mg/kg/min",
+              "duration": "Until oral tolerated",
+              "notes": "US alternative; requires cardiac monitoring"
+            }
+          ],
+          "vivax_ovale": [
+            {
+              "name": "Chloroquine",
+              "dosage": "600mg base, then 300mg at 6, 24, 48 hours (total 1500mg base)",
+              "duration": "48 hours",
+              "notes": "Still effective for P. vivax/ovale (except resistant areas)"
+            },
+            {
+              "name": "ACT (as above)",
+              "dosage": "Per uncomplicated dosing",
+              "duration": "3 days",
+              "notes": "For chloroquine-resistant P. vivax"
+            },
+            {
+              "name": "Primaquine (radical cure)",
+              "dosage": "0.25-0.5mg/kg daily (adult: 15-30mg daily)",
+              "duration": "14 days",
+              "notes": "REQUIRED to prevent relapse; check G6PD first (hemolysis risk)"
+            },
+            {
+              "name": "Tafenoquine (Krintafel)",
+              "dosage": "300mg single dose",
+              "duration": "Single dose",
+              "notes": "Alternative for radical cure; requires G6PD testing"
+            }
+          ],
+          "prophylaxis": [
+            {
+              "name": "Atovaquone-Proguanil (Malarone)",
+              "dosage": "1 adult tablet daily",
+              "timing": "1-2 days before, during, 7 days after travel",
+              "notes": "Preferred for short trips; well-tolerated"
+            },
+            {
+              "name": "Doxycycline",
+              "dosage": "100mg daily",
+              "timing": "1-2 days before, during, 28 days after travel",
+              "notes": "Inexpensive; may cause photosensitivity; avoid in pregnancy/children <8"
+            },
+            {
+              "name": "Mefloquine (Lariam)",
+              "dosage": "250mg weekly",
+              "timing": "2-3 weeks before, during, 4 weeks after travel",
+              "notes": "Weekly dosing; avoid if psychiatric history, seizures, cardiac issues"
+            },
+            {
+              "name": "Chloroquine",
+              "dosage": "500mg (300mg base) weekly",
+              "timing": "1-2 weeks before, during, 4 weeks after travel",
+              "notes": "Only for chloroquine-sensitive areas (few remaining)"
+            },
+            {
+              "name": "Tafenoquine (Arakoda)",
+              "dosage": "200mg daily x3 days loading, then 200mg weekly",
+              "timing": "Weekly during and 1 week after travel",
+              "notes": "Requires G6PD testing before use"
+            }
+          ],
+          "supportive": [
+            {
+              "name": "Acetaminophen",
+              "dosage": "500-1000mg every 4-6 hours",
+              "max_daily": "4000mg",
+              "notes": "For fever and pain; avoid aspirin/ibuprofen (platelet issues)"
+            },
+            {
+              "name": "IV Fluids",
+              "dosage": "Individualized",
+              "notes": "Careful fluid management; avoid overload"
+            },
+            {
+              "name": "Blood Transfusion",
+              "notes": "For severe anemia (Hb <5-7 g/dL)"
+            },
+            {
+              "name": "Dextrose (Glucose)",
+              "dosage": "IV bolus + maintenance",
+              "notes": "For hypoglycemia (common with quinine and severe malaria)"
+            },
+            {
+              "name": "Benzodiazepines",
+              "dosage": "Per seizure protocol",
+              "notes": "For seizure management in cerebral malaria"
+            },
+            {
+              "name": "Exchange Transfusion",
+              "notes": "Consider for parasitemia >10% with severe complications"
+            }
+          ]
+        },
+        "severity_classification": {
+          "uncomplicated": {
+            "criteria": "Symptomatic malaria without signs of severity or vital organ dysfunction",
+            "treatment": "Oral ACT, outpatient if reliable follow-up"
+          },
+          "severe": {
+            "criteria": "One or more: impaired consciousness, prostration, multiple convulsions, respiratory distress, shock, pulmonary edema, abnormal bleeding, jaundice, severe anemia (Hb <5g/dL), hypoglycemia (<40mg/dL), acidosis, renal impairment, hyperparasitemia (>10%)",
+            "treatment": "IV artesunate, ICU care, supportive management"
+          }
+        },
+        "warning_signs": [
+          "Altered consciousness or coma",
+          "Repeated seizures",
+          "Extreme weakness (cannot walk or sit)",
+          "Difficulty breathing",
+          "Severe vomiting (unable to take oral medication)",
+          "Severe diarrhea or dehydration",
+          "Dark or reduced urine output",
+          "Jaundice (yellow eyes/skin)",
+          "Abnormal bleeding (gums, nose, bruising)",
+          "High fever unresponsive to treatment",
+          "Shock (cold, clammy, rapid pulse)"
+        ]
       }
     }
   },
   "Tuberculosis": {
-    "description": "Tuberculosis (TB) is an infectious disease usually caused by Mycobacterium tuberculosis bacteria, typically affecting the lungs.",
+    "description": "Tuberculosis (TB) is a serious infectious disease caused primarily by Mycobacterium tuberculosis bacteria. It typically attacks the lungs (pulmonary TB) but can also affect other parts of the body (extrapulmonary TB). TB spreads through the air when infected individuals cough, sneeze, or spit. About one-quarter of the world's population has latent TB (infected but not sick). Active TB disease develops in 5-10% of infected people, usually within 1-2 years. TB is curable with proper treatment.",
     "model_config": {
-      "path": "models/tb_model.keras",
       "size": [128, 128]
     },
     "labels": ["Normal", "Tuberculosis"],
     "details": {
       "Normal": {
-        "info": "The chest X-ray analysis suggests the lungs appear clear, without radiological signs typically associated with active pulmonary tuberculosis.",
+        "info": "The chest X-ray analysis suggests the lungs appear clear, without radiological signs typically associated with active pulmonary tuberculosis. No cavities, infiltrates, nodules, pleural effusions, or lymphadenopathy are noted.",
         "symptoms": [],
         "causes": [],
-        "treatment_overview": "No active TB treatment indicated.",
+        "treatment_overview": "No active TB treatment indicated. Consider evaluation for latent TB if high-risk exposure.",
         "diagnosis_methods": [],
-        "prevention": []
+        "prevention": [
+          "BCG vaccination (primarily for children in endemic areas)",
+          "Adequate ventilation in living spaces",
+          "Respiratory hygiene (cover coughs/sneezes)",
+          "Prompt treatment of active TB cases",
+          "Treatment of latent TB in high-risk individuals",
+          "Infection control in healthcare settings",
+          "HIV prevention and treatment"
+        ],
+        "medications": []
       },
       "Tuberculosis": {
-        "info": "The chest X-ray analysis shows features that can be consistent with pulmonary tuberculosis.",
-        "symptoms": ["Persistent cough (>3 weeks)", "Chest pain", "Coughing blood/sputum", "Weakness/fatigue", "Weight loss", "Fever", "Night sweats"],
-        "causes": ["Mycobacterium tuberculosis", "Airborne transmission"],
-        "treatment_overview": "Active TB requires combination antibiotics for 6-9+ months. Latent TB often treated. **Adherence crucial. Consult a doctor.**",
-        "diagnosis_methods": ["History", "Skin test (TST)", "Blood test (IGRA)", "Chest X-ray", "Sputum tests (smear/culture/molecular)"],
-        "prevention": ["BCG vaccine", "Latent TB treatment", "Infection control"]
+        "info": "The chest X-ray analysis shows features that can be consistent with pulmonary tuberculosis, such as upper lobe infiltrates, cavitary lesions, nodules, fibrosis, calcifications, or pleural effusions. Confirmation requires microbiological testing.",
+        "symptoms": [
+          "Persistent cough lasting 3 or more weeks",
+          "Coughing up blood or blood-tinged sputum (hemoptysis)",
+          "Chest pain with breathing or coughing",
+          "Unintentional weight loss (often significant)",
+          "Fatigue and general weakness",
+          "Fever (often low-grade, 99-101°F)",
+          "Drenching night sweats",
+          "Chills",
+          "Loss of appetite",
+          "Shortness of breath (progressive)",
+          "Hoarseness (if laryngeal TB)",
+          "Lymph node swelling (often in neck)",
+          "Bone pain (if skeletal TB)",
+          "Headache, confusion (if TB meningitis)",
+          "Abdominal pain, masses (if abdominal TB)"
+        ],
+        "causes": [
+          "Mycobacterium tuberculosis (primary cause)",
+          "Mycobacterium bovis (from unpasteurized dairy)",
+          "Mycobacterium africanum (West Africa)",
+          "Transmission: Airborne droplets from active pulmonary TB",
+          "Risk factors for infection: Close contact with active TB, crowded living conditions, healthcare work, prisons, homeless shelters",
+          "Risk factors for progression to active disease:",
+          "- HIV/AIDS (greatest risk factor)",
+          "- Recent TB infection (within 2 years)",
+          "- Immunosuppressive therapy (TNF inhibitors, steroids)",
+          "- Diabetes mellitus",
+          "- Chronic kidney disease/hemodialysis",
+          "- Malnutrition",
+          "- Silicosis",
+          "- Solid organ transplant",
+          "- Head/neck cancer",
+          "- Gastrectomy or jejunoileal bypass",
+          "- Low body weight",
+          "- Substance abuse (alcohol, IV drugs)",
+          "- Smoking"
+        ],
+        "treatment_overview": "Active TB requires a combination of antibiotics for 6-9+ months to prevent drug resistance. Directly Observed Therapy (DOT) is recommended to ensure adherence. Drug-resistant TB requires longer treatment with specialized regimens. Latent TB is treated to prevent progression. **Complete the entire course of medication - stopping early leads to drug resistance and treatment failure.**",
+        "diagnosis_methods": [
+          "Symptom history and TB exposure history",
+          "Physical examination",
+          "Chest X-ray (PA view, sometimes lateral)",
+          "Tuberculin skin test (TST/Mantoux/PPD)",
+          "Interferon-gamma release assays (IGRAs): QuantiFERON-TB Gold, T-SPOT.TB",
+          "Sputum smear microscopy (acid-fast bacilli/AFB)",
+          "Sputum culture on Löwenstein-Jensen or liquid media (gold standard)",
+          "GeneXpert MTB/RIF (rapid molecular test, detects rifampin resistance)",
+          "Drug susceptibility testing (DST)",
+          "CT scan of chest (detailed imaging)",
+          "Bronchoscopy with BAL (if sputum-negative)",
+          "Tissue biopsy with histopathology",
+          "Adenosine deaminase (ADA) in pleural/CSF fluid",
+          "HIV testing (all TB patients)"
+        ],
+        "prevention": [
+          "BCG vaccination (for children in endemic areas; limited efficacy in adults)",
+          "Treatment of latent TB infection (LTBI)",
+          "Early detection and treatment of active cases",
+          "Contact tracing and screening",
+          "Improved ventilation and air quality",
+          "UV germicidal irradiation in healthcare facilities",
+          "Respiratory isolation for active pulmonary TB",
+          "N95 respirators for healthcare workers",
+          "HIV prevention and treatment",
+          "Addressing social determinants (poverty, malnutrition, crowding)"
+        ],
+        "medications": {
+          "first_line": [
+            {
+              "name": "Isoniazid (INH)",
+              "dosage": "5mg/kg daily (max 300mg) or 15mg/kg 3x/week",
+              "duration": "6-9 months",
+              "notes": "Bactericidal; take pyridoxine (B6) 25-50mg daily to prevent neuropathy"
+            },
+            {
+              "name": "Rifampin (Rifampicin)",
+              "dosage": "10mg/kg daily (max 600mg)",
+              "duration": "6-9 months",
+              "notes": "Bactericidal; turns urine/tears orange; many drug interactions"
+            },
+            {
+              "name": "Pyrazinamide",
+              "dosage": "25-35mg/kg daily (max 2g) based on weight",
+              "duration": "First 2 months (intensive phase)",
+              "notes": "Sterilizing activity; monitor uric acid, liver function"
+            },
+            {
+              "name": "Ethambutol",
+              "dosage": "15-25mg/kg daily",
+              "duration": "First 2 months (until susceptibility confirmed)",
+              "notes": "Added until drug susceptibility known; monitor vision (optic neuritis)"
+            }
+          ],
+          "standard_regimen": [
+            {
+              "phase": "Intensive Phase",
+              "drugs": "Isoniazid + Rifampin + Pyrazinamide + Ethambutol (HRZE)",
+              "duration": "2 months (daily)",
+              "notes": "All 4 drugs together"
+            },
+            {
+              "phase": "Continuation Phase",
+              "drugs": "Isoniazid + Rifampin (HR)",
+              "duration": "4 months (daily or 3x/week)",
+              "notes": "After susceptibility confirmed"
+            }
+          ],
+          "latent_tb_regimens": [
+            {
+              "name": "Isoniazid (INH) daily",
+              "dosage": "5mg/kg daily (max 300mg)",
+              "duration": "6-9 months",
+              "notes": "Traditional regimen; add pyridoxine"
+            },
+            {
+              "name": "Rifampin daily",
+              "dosage": "10mg/kg daily (max 600mg)",
+              "duration": "4 months",
+              "notes": "Preferred for INH-resistant or intolerance"
+            },
+            {
+              "name": "Isoniazid + Rifapentine (3HP)",
+              "dosage": "INH 15mg/kg (max 900mg) + Rifapentine 900mg weekly",
+              "duration": "12 weeks (12 doses)",
+              "notes": "Preferred regimen; convenient; DOT recommended"
+            },
+            {
+              "name": "Isoniazid + Rifampin daily (3HR)",
+              "dosage": "INH 5mg/kg + Rifampin 10mg/kg daily",
+              "duration": "3 months",
+              "notes": "Alternative short-course regimen"
+            }
+          ],
+          "mdr_tb": [
+            {
+              "name": "Bedaquiline",
+              "dosage": "400mg daily x2 weeks, then 200mg 3x/week",
+              "duration": "6 months",
+              "notes": "Core drug for MDR-TB; QT prolongation risk"
+            },
+            {
+              "name": "Pretomanid",
+              "dosage": "200mg daily",
+              "duration": "26 weeks (as part of BPaL)",
+              "notes": "Part of BPaL regimen for XDR-TB"
+            },
+            {
+              "name": "Linezolid",
+              "dosage": "600mg daily (may reduce to 300mg)",
+              "duration": "6+ months",
+              "notes": "Core drug; monitor for myelosuppression, neuropathy"
+            },
+            {
+              "name": "Levofloxacin",
+              "dosage": "750-1000mg daily",
+              "duration": "Throughout treatment",
+              "notes": "Preferred fluoroquinolone"
+            },
+            {
+              "name": "Moxifloxacin",
+              "dosage": "400mg daily",
+              "duration": "Throughout treatment",
+              "notes": "Alternative fluoroquinolone; QT prolongation"
+            },
+            {
+              "name": "Clofazimine",
+              "dosage": "100mg daily",
+              "duration": "Throughout treatment",
+              "notes": "Causes skin discoloration"
+            },
+            {
+              "name": "Cycloserine",
+              "dosage": "250-500mg twice daily",
+              "duration": "Throughout treatment",
+              "notes": "CNS side effects; give with pyridoxine"
+            },
+            {
+              "name": "Delamanid",
+              "dosage": "100mg twice daily",
+              "duration": "6 months",
+              "notes": "Second-line; QT prolongation"
+            }
+          ],
+          "supportive": [
+            {
+              "name": "Pyridoxine (Vitamin B6)",
+              "dosage": "25-50mg daily",
+              "duration": "Throughout INH treatment",
+              "notes": "Prevents isoniazid-induced neuropathy; essential in pregnancy, diabetes, HIV, malnutrition"
+            },
+            {
+              "name": "Acetaminophen",
+              "dosage": "500-1000mg every 6 hours as needed",
+              "notes": "For fever and pain; use cautiously with liver toxicity"
+            },
+            {
+              "name": "Prednisone",
+              "dosage": "40-60mg daily, tapered",
+              "duration": "2-6 weeks",
+              "notes": "For TB meningitis, pericarditis, severe pleural effusion"
+            },
+            {
+              "name": "Codeine or Dextromethorphan",
+              "dosage": "As needed",
+              "notes": "For severe cough (use cautiously)"
+            }
+          ],
+          "hiv_coinfection": [
+            {
+              "name": "Antiretroviral Therapy (ART)",
+              "timing": "Start within 2-8 weeks of TB treatment",
+              "notes": "Rifampin interacts with many ARVs; may use rifabutin instead"
+            },
+            {
+              "name": "Rifabutin",
+              "dosage": "150-450mg daily (adjusted for ART)",
+              "notes": "Alternative to rifampin; fewer drug interactions with ARVs"
+            },
+            {
+              "name": "Trimethoprim-Sulfamethoxazole",
+              "dosage": "1 DS tablet daily",
+              "notes": "PCP prophylaxis for HIV patients"
+            }
+          ]
+        },
+        "monitoring": {
+          "clinical": [
+            "Monthly clinic visits during treatment",
+            "Weight monitoring",
+            "Symptom assessment",
+            "Medication adherence check",
+            "Side effect monitoring"
+          ],
+          "laboratory": [
+            "Baseline: CBC, CMP, LFTs, HIV test, HBV/HCV",
+            "Sputum smear/culture at 2 months (should convert to negative)",
+            "Sputum at completion of treatment",
+            "Monthly LFTs if risk factors for hepatotoxicity",
+            "Visual acuity and color vision (monthly if on ethambutol)",
+            "Uric acid (if on pyrazinamide)",
+            "Drug susceptibility testing if culture-positive at 2 months"
+          ]
+        },
+        "warning_signs": [
+          "Jaundice (yellowing of skin/eyes) - hepatotoxicity",
+          "Dark urine and light stools",
+          "Persistent nausea/vomiting for more than 3 days",
+          "Abdominal pain (especially upper right)",
+          "Numbness or tingling in hands/feet (neuropathy)",
+          "Vision changes (blurred vision, color blindness)",
+          "Rash or itching",
+          "Fever lasting more than 3 days after starting treatment",
+          "Worsening cough or coughing blood",
+          "Shortness of breath",
+          "Confusion or dizziness"
+        ],
+        "drug_resistance": {
+          "monoresistant": "Resistant to one first-line drug",
+          "polydrug_resistant": "Resistant to more than one first-line drug (but not both INH and rifampin)",
+          "mdr_tb": "Multidrug-resistant: resistant to at least isoniazid AND rifampin",
+          "pre_xdr_tb": "MDR-TB plus resistance to any fluoroquinolone",
+          "xdr_tb": "Pre-XDR plus resistance to bedaquiline and/or linezolid"
+        }
       }
     }
   },
   "Dental": {
-    "description": "Dental X-rays or images help detect various oral conditions including cavities, existing restorations, impacted teeth, and implants.",
+    "description": "Dental conditions encompass a wide range of issues affecting the teeth, gums, and oral cavity. Common conditions include cavities (dental caries), gum disease (periodontal disease), impacted teeth (often wisdom teeth), and various dental restorations and replacements. Regular dental care is essential for preventing and managing these conditions. Dental X-rays help identify issues not visible during routine examination.",
     "model_config": {
-      "path": "models/dental_cavity_detector.keras",
       "size": [128, 128]
     },
     "labels": ["cavity", "fillings", "impacted tooth", "implant"],
     "details": {
       "cavity": {
-        "info": "Analysis indicates features consistent with a dental cavity (caries).",
-        "symptoms": ["Toothache", "Sensitivity", "Visible holes/pits", "Staining", "Pain on biting"],
-        "causes": ["Bacteria", "Sugary diet", "Poor hygiene"],
-        "treatment_overview": "Fillings, crowns, root canal, or extraction depending on severity. **Consult a dentist.**",
-        "diagnosis_methods": ["Visual exam", "Probe", "X-rays"],
-        "prevention": ["Brushing", "Flossing", "Regular checkups", "Limit sugar"]
+        "info": "Analysis indicates features consistent with a dental cavity (dental caries). Cavities appear as areas of radiolucency (darker areas) on X-rays, indicating demineralization and destruction of tooth structure. They can occur on chewing surfaces, between teeth, or at the root surface.",
+        "symptoms": [
+          "Toothache (spontaneous pain or pain with triggers)",
+          "Sensitivity to hot, cold, or sweet foods/drinks",
+          "Pain when biting or chewing",
+          "Visible holes or pits in teeth",
+          "Brown, black, or white staining on tooth surface",
+          "Bad breath (halitosis)",
+          "Unpleasant taste in mouth",
+          "Swelling near affected tooth (if abscess develops)",
+          "No symptoms in early stages (asymptomatic)"
+        ],
+        "causes": [
+          "Bacterial action (primarily Streptococcus mutans)",
+          "Frequent consumption of sugary foods and drinks",
+          "Poor oral hygiene (inadequate brushing/flossing)",
+          "Infrequent or no dental visits",
+          "Dry mouth (xerostomia) from medications, medical conditions, or radiation",
+          "Acid reflux (GERD) or frequent vomiting",
+          "Inadequate fluoride exposure",
+          "Worn or damaged fillings/restorations",
+          "Receding gums exposing root surfaces",
+          "Eating disorders (bulimia)",
+          "Genetic factors affecting enamel strength"
+        ],
+        "treatment_overview": "Treatment depends on cavity severity. Early cavities may be reversed with fluoride. Established cavities require removal of decay and restoration. Deep cavities may need root canal treatment. Severely damaged teeth may require extraction. **Consult a dentist promptly to prevent progression.**",
+        "diagnosis_methods": [
+          "Visual examination",
+          "Dental explorer (probe) examination",
+          "Bitewing X-rays",
+          "Periapical X-rays",
+          "Panoramic X-ray",
+          "Laser fluorescence cavity detection (DIAGNOdent)",
+          "Transillumination",
+          "Cone beam CT (for complex cases)"
+        ],
+        "prevention": [
+          "Brush teeth twice daily with fluoride toothpaste",
+          "Floss daily",
+          "Use fluoride mouthwash",
+          "Limit sugary foods and drinks",
+          "Avoid frequent snacking",
+          "Drink water (especially fluoridated water)",
+          "Regular dental check-ups (every 6 months)",
+          "Professional dental cleanings",
+          "Dental sealants for molars (especially in children)",
+          "Chew sugar-free gum after meals",
+          "Consider prescription fluoride for high-risk patients"
+        ],
+        "medications": {
+          "fluoride_treatments": [
+            {
+              "name": "Fluoride Varnish (Duraphat)",
+              "application": "Professional application",
+              "frequency": "2-4 times yearly",
+              "notes": "5% sodium fluoride; prevents and may reverse early decay"
+            },
+            {
+              "name": "Fluoride Gel/Foam",
+              "application": "Professional application",
+              "frequency": "2-4 times yearly",
+              "notes": "Applied in dental office via tray"
+            },
+            {
+              "name": "Prescription Fluoride Toothpaste",
+              "concentration": "5000 ppm fluoride",
+              "usage": "Daily brushing",
+              "notes": "For high-risk patients (e.g., PreviDent 5000)"
+            },
+            {
+              "name": "Sodium Fluoride Rinse",
+              "concentration": "0.05% (225 ppm) or 0.2% (900 ppm)",
+              "usage": "Daily or weekly rinse",
+              "notes": "ACT, Phos-Flur"
+            }
+          ],
+          "remineralization": [
+            {
+              "name": "Casein Phosphopeptide-ACP (MI Paste)",
+              "usage": "Apply after brushing",
+              "frequency": "Daily",
+              "notes": "Delivers calcium and phosphate for remineralization"
+            },
+            {
+              "name": "Hydroxyapatite Toothpaste",
+              "usage": "Daily brushing",
+              "notes": "Alternative to fluoride for remineralization"
+            }
+          ],
+          "pain_management": [
+            {
+              "name": "Ibuprofen",
+              "dosage": "200-400mg every 4-6 hours",
+              "max_daily": "1200mg (OTC)",
+              "notes": "Anti-inflammatory; effective for dental pain"
+            },
+            {
+              "name": "Acetaminophen",
+              "dosage": "500-1000mg every 4-6 hours",
+              "max_daily": "3000mg",
+              "notes": "For mild to moderate pain"
+            },
+            {
+              "name": "Acetaminophen + Ibuprofen Combination",
+              "dosage": "Alternating or combined dosing",
+              "notes": "More effective than either alone"
+            },
+            {
+              "name": "Benzocaine Gel (Orajel)",
+              "usage": "Apply to affected area",
+              "frequency": "Up to 4 times daily",
+              "notes": "Topical anesthetic for temporary relief"
+            },
+            {
+              "name": "Clove Oil (Eugenol)",
+              "usage": "Apply small amount to affected tooth",
+              "notes": "Natural remedy with anesthetic properties"
+            }
+          ],
+          "antibiotics": [
+            {
+              "name": "Amoxicillin",
+              "dosage": "500mg three times daily",
+              "duration": "5-7 days",
+              "notes": "For dental abscess/infection"
+            },
+            {
+              "name": "Amoxicillin-Clavulanate",
+              "dosage": "875mg/125mg twice daily",
+              "duration": "5-7 days",
+              "notes": "For resistant infections"
+            },
+            {
+              "name": "Clindamycin",
+              "dosage": "300mg four times daily",
+              "duration": "5-7 days",
+              "notes": "For penicillin allergy"
+            },
+            {
+              "name": "Metronidazole",
+              "dosage": "500mg three times daily",
+              "duration": "5-7 days",
+              "notes": "For anaerobic infections; often combined with penicillin"
+            },
+            {
+              "name": "Azithromycin",
+              "dosage": "500mg day 1, 250mg days 2-5",
+              "duration": "5 days",
+              "notes": "Alternative for penicillin allergy"
+            }
+          ]
+        },
+        "cavity_classification": {
+          "class_I": "Pits and fissures on occlusal surfaces",
+          "class_II": "Proximal surfaces of premolars and molars",
+          "class_III": "Proximal surfaces of incisors and canines (not involving incisal angle)",
+          "class_IV": "Proximal surfaces of incisors and canines involving incisal angle",
+          "class_V": "Cervical third of facial or lingual surfaces",
+          "class_VI": "Incisal edges and cusp tips"
+        },
+        "warning_signs": [
+          "Severe, persistent toothache",
+          "Swelling of face, cheek, or jaw",
+          "Fever with dental pain",
+          "Difficulty opening mouth or swallowing",
+          "Pus discharge near tooth",
+          "Swollen lymph nodes under jaw",
+          "Tooth becomes loose",
+          "Bad taste despite good oral hygiene"
+        ]
       },
       "fillings": {
-        "info": "Analysis identifies existing dental fillings (restorations). Condition of filling may need assessment.",
-        "symptoms": ["None unless damaged", "Sensitivity", "Rough edge"],
-        "causes": ["Prior cavity treatment"],
-        "treatment_overview": ["Monitor", "Replace if damaged/leaking. **Consult a dentist.**"],
-        "diagnosis_methods": ["Visual exam", "X-rays"],
-        "prevention": ["Good oral hygiene"]
+        "info": "Analysis identifies existing dental fillings (restorations). Fillings appear as radiopaque (bright/white) areas on X-rays for amalgam or as more tooth-colored opacities for composite resins. Assessment includes checking for marginal integrity, secondary decay, and proper adaptation.",
+        "symptoms": [
+          "Usually asymptomatic if in good condition",
+          "Sensitivity to temperature (if failing)",
+          "Sensitivity to sweet foods",
+          "Rough or sharp edge felt with tongue",
+          "Visible crack or chip in filling",
+          "Dark line around filling margin",
+          "Pain when biting (cracked filling)",
+          "Food getting stuck near filling",
+          "Filling feels loose or missing"
+        ],
+        "causes": [
+          "Prior cavity treatment",
+          "Tooth fracture repair",
+          "Worn enamel replacement",
+          "Cosmetic tooth reshaping",
+          "Root surface coverage"
+        ],
+        "treatment_overview": "Existing fillings should be monitored for integrity. Damaged, leaking, or worn fillings should be replaced. Recurrent decay under fillings requires removal of decay and new restoration. **Regular dental check-ups recommended every 6 months to monitor restorations.**",
+        "diagnosis_methods": [
+          "Visual examination",
+          "Tactile examination with explorer",
+          "Bitewing X-rays (margins and secondary decay)",
+          "Transillumination",
+          "Sensitivity testing"
+        ],
+        "prevention": [
+          "Good oral hygiene (brushing, flossing)",
+          "Avoid chewing ice or hard objects",
+          "Wear mouthguard if grinding teeth",
+          "Regular dental checkups",
+          "Limit acidic and sugary foods",
+          "Use fluoride products"
+        ],
+        "medications": {
+          "desensitizing": [
+            {
+              "name": "Potassium Nitrate Toothpaste (Sensodyne)",
+              "usage": "Daily brushing",
+              "notes": "For sensitivity after filling placement or old fillings"
+            },
+            {
+              "name": "Stannous Fluoride Toothpaste",
+              "usage": "Daily brushing",
+              "notes": "Helps with sensitivity and cavity prevention"
+            },
+            {
+              "name": "Desensitizing Agent (Gluma, Super Seal)",
+              "application": "Professional application",
+              "notes": "Applied in dental office for persistent sensitivity"
+            }
+          ],
+          "pain_management": [
+            {
+              "name": "Ibuprofen",
+              "dosage": "400mg every 4-6 hours",
+              "notes": "For post-filling discomfort"
+            },
+            {
+              "name": "Acetaminophen",
+              "dosage": "500-1000mg every 4-6 hours",
+              "notes": "Alternative for pain relief"
+            }
+          ]
+        },
+        "filling_types": {
+          "amalgam": {
+            "material": "Silver, mercury, tin, copper",
+            "durability": "10-15+ years",
+            "pros": "Durable, inexpensive, quick placement",
+            "cons": "Visible (silver color), mercury concerns, requires more tooth removal"
+          },
+          "composite_resin": {
+            "material": "Tooth-colored plastic and glass mixture",
+            "durability": "5-10 years",
+            "pros": "Aesthetic, bonds to tooth, less tooth removal",
+            "cons": "May stain, less durable than amalgam, more expensive"
+          },
+          "glass_ionomer": {
+            "material": "Glass and acrylic",
+            "durability": "5 years",
+            "pros": "Releases fluoride, bonds chemically",
+            "cons": "Less durable, limited aesthetics"
+          },
+          "gold": {
+            "material": "Gold alloy",
+            "durability": "15-30 years",
+            "pros": "Very durable, biocompatible",
+            "cons": "Very expensive, highly visible, requires multiple visits"
+          },
+                    "ceramic": {
+            "material": "Porcelain",
+            "durability": "10-15 years",
+            "pros": "Excellent aesthetics, tooth-colored, stain-resistant, biocompatible",
+            "cons": "Expensive, brittle (can fracture), requires multiple visits"
+          }
+        },
+        "warning_signs": [
+          "Sudden sharp pain when biting",
+          "Persistent sensitivity lasting more than 2 weeks",
+          "Visible crack in filling",
+          "Filling falls out completely",
+          "Swelling or abscess formation",
+          "Severe pain not relieved by over-the-counter medication"
+        ]
       },
       "impacted tooth": {
-        "info": "Analysis suggests an impacted tooth (a tooth that hasn't erupted properly). Often wisdom teeth.",
-        "symptoms": ["May be asymptomatic", "Pain", "Swelling", "Jaw stiffness", "Bad breath"],
-        "causes": ["Lack of space", "Obstruction", "Abnormal position"],
-        "treatment_overview": ["Observation", "Pain relief", "Antibiotics (if infected)", "Surgical extraction. **Consult dentist/oral surgeon.**"],
-        "diagnosis_methods": ["Visual exam", "X-rays (Panoramic, CBCT)"],
-        "prevention": ["Not directly preventable"]
+        "info": "Analysis suggests an impacted tooth — a tooth that hasn't erupted properly or is blocked from erupting into its normal position. Most commonly affects wisdom teeth (third molars), but can occur with canines or other teeth. May be partially or completely impacted.",
+        "symptoms": [
+          "Often asymptomatic (discovered on X-ray)",
+          "Pain or tenderness in gums or jaw",
+          "Swelling and redness of gums around the area",
+          "Jaw stiffness or difficulty opening mouth",
+          "Bad breath (halitosis)",
+          "Unpleasant taste when biting near the area",
+          "Headache or jaw pain",
+          "Swollen lymph nodes in the neck",
+          "Crowding or shifting of adjacent teeth",
+          "Bleeding gums",
+          "Visible gum flap over partially erupted tooth"
+        ],
+        "causes": [
+          "Insufficient space in the jaw",
+          "Obstruction by other teeth",
+          "Abnormal tooth position or angle",
+          "Dense overlying bone or gum tissue",
+          "Retained primary (baby) teeth",
+          "Genetic factors (small jaw, large teeth)",
+          "Delayed tooth development"
+        ],
+        "treatment_overview": "Treatment depends on symptoms and complications. Asymptomatic impacted teeth may be monitored. Symptomatic or problematic teeth typically require surgical extraction. Orthodontic treatment may be needed for impacted canines. **Consult dentist or oral surgeon for evaluation.**",
+        "diagnosis_methods": [
+          "Visual and physical examination",
+          "Panoramic X-ray (OPG)",
+          "Periapical X-rays",
+          "Cone Beam CT (CBCT) for 3D imaging",
+          "Assessment of adjacent tooth roots and nerves"
+        ],
+        "prevention": [
+          "Regular dental check-ups for early detection",
+          "Orthodontic evaluation in childhood",
+          "Early extraction of problematic baby teeth if needed",
+          "Adequate space maintenance",
+          "Genetic counseling if family history present"
+        ],
+        "medications": {
+          "pain_management": [
+            {
+              "name": "Ibuprofen",
+              "dosage": "400-600mg every 6 hours",
+              "max_daily": "2400mg",
+              "notes": "First-line for impacted tooth pain; anti-inflammatory"
+            },
+            {
+              "name": "Acetaminophen",
+              "dosage": "500-1000mg every 4-6 hours",
+              "max_daily": "3000mg",
+              "notes": "For mild to moderate pain"
+            },
+            {
+              "name": "Naproxen",
+              "dosage": "500mg twice daily",
+              "max_daily": "1000mg",
+              "notes": "Longer-acting anti-inflammatory"
+            },
+            {
+              "name": "Codeine + Acetaminophen",
+              "dosage": "30mg/300mg every 4-6 hours",
+              "notes": "For severe pain; prescription required"
+            },
+            {
+              "name": "Tramadol",
+              "dosage": "50-100mg every 4-6 hours",
+              "notes": "For moderate to severe pain post-extraction"
+            }
+          ],
+          "antibiotics": [
+            {
+              "name": "Amoxicillin",
+              "dosage": "500mg three times daily",
+              "duration": "5-7 days",
+              "notes": "For pericoronitis (infection around impacted tooth)"
+            },
+            {
+              "name": "Clindamycin",
+              "dosage": "300mg four times daily",
+              "duration": "5-7 days",
+              "notes": "For penicillin allergy; good anaerobic coverage"
+            },
+            {
+              "name": "Metronidazole",
+              "dosage": "400-500mg three times daily",
+              "duration": "5-7 days",
+              "notes": "Often combined with penicillin for severe infections"
+            },
+            {
+              "name": "Azithromycin",
+              "dosage": "500mg day 1, then 250mg days 2-5",
+              "duration": "5 days",
+              "notes": "Alternative for penicillin allergy"
+            }
+          ],
+          "antiseptic_rinses": [
+            {
+              "name": "Chlorhexidine Gluconate 0.12%",
+              "usage": "Rinse 15ml twice daily",
+              "duration": "1-2 weeks",
+              "notes": "Prescription mouth rinse; reduces bacteria"
+            },
+            {
+              "name": "Warm Salt Water Rinse",
+              "usage": "1/2 teaspoon salt in 8oz warm water, rinse 3-4x daily",
+              "notes": "Home remedy; reduces inflammation"
+            },
+            {
+              "name": "Hydrogen Peroxide Rinse",
+              "usage": "1:1 dilution with water, gentle rinse",
+              "notes": "Helps clean area around impacted tooth"
+            }
+          ],
+          "post_surgical": [
+            {
+              "name": "Dexamethasone",
+              "dosage": "4-8mg single dose pre-operatively",
+              "notes": "Reduces post-operative swelling"
+            },
+            {
+              "name": "Ice Packs",
+              "usage": "20 minutes on, 20 minutes off for first 24-48 hours",
+              "notes": "Reduces swelling and pain"
+            }
+          ]
+        },
+        "impaction_types": {
+          "soft_tissue": {
+            "description": "Tooth covered only by gum tissue",
+            "difficulty": "Easy extraction"
+          },
+          "partial_bony": {
+            "description": "Partly covered by bone",
+            "difficulty": "Moderate extraction"
+          },
+          "complete_bony": {
+            "description": "Completely encased in bone",
+            "difficulty": "Difficult extraction; requires bone removal"
+          },
+          "horizontal": {
+            "description": "Tooth lying sideways",
+            "difficulty": "Most difficult; may damage adjacent teeth"
+          }
+        },
+        "complications": {
+          "pericoronitis": "Infection of gum tissue around partially erupted tooth",
+          "cyst_formation": "Fluid-filled sac around impacted tooth",
+          "root_resorption": "Damage to roots of adjacent teeth",
+          "crowding": "Shifting of other teeth",
+          "decay": "Cavities in impacted or adjacent teeth",
+          "gum_disease": "Difficulty cleaning leads to periodontitis"
+        },
+        "warning_signs": [
+          "Severe pain not controlled by medication",
+          "Facial swelling extending to eye or neck",
+          "Difficulty swallowing or breathing",
+          "High fever (>101°F/38.3°C)",
+          "Pus discharge",
+          "Numbness or tingling in lip, tongue, or chin",
+          "Unable to open mouth (trismus)",
+          "Severe bleeding"
+        ]
       },
       "implant": {
-        "info": "Analysis identifies a dental implant (artificial tooth root).",
-        "symptoms": ["None if successful", "Pain/swelling if infected"],
-        "causes": ["Prior tooth loss"],
-        "treatment_overview": ["Regular monitoring/cleaning", "Treat infection (peri-implantitis) if present. **Consult dentist/specialist.**"],
-        "diagnosis_methods": ["Visual exam", "X-rays"],
-        "prevention": ["Excellent oral hygiene", "Regular dental visits"]
+        "info": "Analysis identifies a dental implant — an artificial tooth root (typically titanium) surgically placed into the jawbone to support a crown, bridge, or denture. Implants integrate with bone (osseointegration) and provide a stable, long-term tooth replacement solution.",
+        "symptoms": [
+          "Usually asymptomatic if successful",
+          "No symptoms if well-maintained",
+          "Pain or tenderness (if complications)",
+          "Swelling or inflammation (peri-implantitis)",
+          "Bleeding around implant",
+          "Mobility or looseness (implant failure)",
+          "Recession of gum tissue",
+          "Bad taste or odor",
+          "Visible metal (if crown damaged or gum recession)"
+        ],
+        "causes": [
+          "Tooth loss from:",
+          "- Severe decay",
+          "- Trauma or injury",
+          "- Periodontal disease",
+          "- Congenital absence",
+          "- Failed root canal",
+          "- Tooth extraction"
+        ],
+        "treatment_overview": "Dental implants require regular professional monitoring and excellent home care. Successful implants can last 15-25+ years or lifetime with proper maintenance. Complications like peri-implantitis require professional treatment. **Regular dental visits every 3-6 months essential for implant longevity.**",
+        "diagnosis_methods": [
+          "Visual examination",
+          "Periodontal probing (depth around implant)",
+          "Periapical X-rays",
+          "Panoramic X-ray",
+          "Cone Beam CT (CBCT)",
+          "Mobility testing",
+          "Resonance frequency analysis (implant stability)"
+        ],
+        "prevention": [
+          "Excellent oral hygiene (brushing, flossing)",
+          "Use of interdental brushes or water flossers",
+          "Regular professional cleanings",
+          "Avoid smoking (major risk factor for failure)",
+          "Manage diabetes and other systemic conditions",
+          "Wear nightguard if bruxism (teeth grinding)",
+          "Avoid hard/sticky foods that could damage crown"
+        ],
+        "medications": {
+          "maintenance": [
+            {
+              "name": "Chlorhexidine Gluconate 0.12% Rinse",
+              "usage": "Rinse 15ml twice daily for 1-2 weeks",
+              "frequency": "As prescribed during inflammation",
+              "notes": "Anti-bacterial rinse for peri-implant disease"
+            },
+            {
+              "name": "Fluoride-free Toothpaste",
+              "usage": "Daily brushing",
+              "notes": "Some sources recommend fluoride-free for titanium implants; consult dentist"
+            }
+          ],
+          "peri_implantitis_treatment": [
+            {
+              "name": "Amoxicillin",
+              "dosage": "500mg three times daily",
+              "duration": "7-10 days",
+              "notes": "For bacterial infection around implant"
+            },
+            {
+              "name": "Metronidazole",
+              "dosage": "500mg three times daily",
+              "duration": "7-10 days",
+              "notes": "Often combined with amoxicillin for anaerobic bacteria"
+            },
+            {
+              "name": "Doxycycline Hyclate",
+              "dosage": "100mg once or twice daily",
+              "duration": "14-21 days",
+              "notes": "Anti-inflammatory and antimicrobial properties"
+            },
+            {
+              "name": "Minocycline Microspheres (Arestin)",
+              "application": "Local application in peri-implant pocket",
+              "notes": "Slow-release antibiotic; professional application"
+            },
+            {
+              "name": "Chlorhexidine Chip",
+              "application": "Placed in pocket by dentist",
+              "notes": "Local sustained-release antiseptic"
+            }
+          ],
+          "pain_management": [
+            {
+              "name": "Ibuprofen",
+              "dosage": "400-600mg every 6 hours",
+              "notes": "For pain and inflammation"
+            },
+            {
+              "name": "Acetaminophen",
+              "dosage": "500-1000mg every 4-6 hours",
+              "notes": "For mild pain"
+            }
+          ],
+          "bone_grafting_adjuncts": [
+            {
+              "name": "Vitamin D3",
+              "dosage": "1000-2000 IU daily",
+              "notes": "Supports bone health and osseointegration"
+            },
+            {
+              "name": "Calcium Supplements",
+              "dosage": "1000-1200mg daily",
+              "notes": "Supports bone density"
+            }
+          ]
+        },
+        "implant_components": {
+          "fixture": "Titanium screw placed in bone (the implant proper)",
+          "abutment": "Connector piece between fixture and crown",
+          "crown": "Visible tooth restoration",
+          "healing_cap": "Temporary cover during healing period"
+        },
+        "success_factors": {
+          "osseointegration": "Successful bone integration (3-6 months)",
+          "bone_quality": "Adequate bone density and volume",
+          "oral_hygiene": "Excellent daily care",
+          "no_smoking": "Non-smokers have 95%+ success vs 85-90% for smokers",
+          "systemic_health": "Controlled diabetes, no immune disorders",
+          "adequate_gum_tissue": "Sufficient keratinized gingiva"
+        },
+        "complications": {
+          "early_failure": {
+            "description": "Failure within first 3-4 months",
+            "causes": "Poor osseointegration, infection, poor bone quality",
+            "treatment": "Remove implant, bone graft, re-attempt later"
+          },
+          "late_failure": {
+            "description": "Failure after successful integration",
+            "causes": "Peri-implantitis, bone loss, overload, fracture",
+            "treatment": "Treat infection, possible removal and replacement"
+          },
+          "peri_implant_mucositis": {
+            "description": "Reversible inflammation of soft tissue",
+            "treatment": "Professional cleaning, improved oral hygiene"
+          },
+          "peri_implantitis": {
+            "description": "Progressive bone loss around implant",
+            "treatment": "Antibiotics, surgical debridement, bone grafting"
+          },
+          "mechanical_complications": {
+            "description": "Crown fracture, abutment loosening, screw fracture",
+            "treatment": "Repair or replace affected component"
+          }
+        },
+        "warning_signs": [
+          "Increasing pain around implant",
+          "Swelling or pus discharge",
+          "Implant feels loose or mobile",
+          "Gum recession exposing metal",
+          "Bleeding that doesn't stop with gentle cleaning",
+          "Bad odor or taste despite good hygiene",
+          "Crown becomes loose or falls off",
+          "Difficulty chewing on implant side"
+        ],
+        "maintenance_schedule": {
+          "first_year": "Check-ups at 1 week, 1 month, 3 months, 6 months, 12 months post-placement",
+          "after_first_year": "Every 3-6 months depending on risk factors",
+          "x_rays": "Annual or biennial radiographs to monitor bone levels"
+        }
       }
     }
   },
   "Diabetic Retinopathy": {
-    "description": "Diabetic retinopathy is an eye complication of diabetes caused by damage to retinal blood vessels.",
+    "description": "Diabetic retinopathy is a diabetes complication that affects the eyes by damaging blood vessels in the retina. It's a leading cause of blindness in working-age adults. High blood sugar levels cause damage to retinal blood vessels, which can swell, leak, or close off completely. In advanced stages, new abnormal blood vessels grow on the retinal surface. Early detection and treatment can prevent or slow vision loss.",
     "model_config": {
-      "path": "models/diabetic_retinopathy_model.keras",
       "size": [224, 224]
     },
     "labels": ["No DR", "DR Present"],
     "details": {
       "No DR": {
-        "info": "Analysis of the retinal image suggests no visible signs of diabetic retinopathy.",
+        "info": "Analysis of the retinal fundus image suggests no visible signs of diabetic retinopathy. The retinal vessels appear normal, with no microaneurysms, hemorrhages, exudates, or signs of neovascularization. The optic disc and macula appear healthy.",
         "symptoms": [],
         "causes": [],
-        "treatment_overview": "No DR treatment indicated. Focus on diabetes control and regular eye exams.",
+        "treatment_overview": "No diabetic retinopathy treatment indicated. Focus on optimal diabetes control (HbA1c <7%), blood pressure control, and regular dilated eye exams annually.",
         "diagnosis_methods": [],
-        "prevention": []
+        "prevention": [
+          "Strict blood glucose control (HbA1c <7%)",
+          "Blood pressure control (<140/90 mmHg)",
+          "Cholesterol management",
+          "Annual comprehensive dilated eye exam",
+          "Healthy diet and regular exercise",
+          "Avoid smoking",
+          "Take diabetes medications as prescribed",
+          "Regular medical check-ups"
+        ],
+        "medications": [],
+        "monitoring": [
+          "Annual dilated eye exam recommended",
+          "More frequent if diabetes poorly controlled",
+          "Self-monitoring of blood glucose",
+          "Regular HbA1c testing (every 3 months)"
+        ]
       },
       "DR Present": {
-        "info": "Analysis of the retinal image shows signs consistent with diabetic retinopathy. Severity requires ophthalmologist assessment.",
-        "symptoms": ["Often asymptomatic early", "Blurred/fluctuating vision", "Floaters", "Dark spots in vision", "Vision loss"],
-        "causes": ["Chronic high blood sugar", "High blood pressure/cholesterol", "Duration of diabetes"],
-        "treatment_overview": "Strict diabetes control. Eye treatments: Laser, Anti-VEGF injections, Steroids, Vitrectomy surgery. **Requires regular monitoring by an ophthalmologist.**",
-        "diagnosis_methods": ["Dilated eye exam", "Fundus photography", "OCT scan", "Fluorescein angiography"],
-        "prevention": ["Strict diabetes management", "Regular dilated eye exams", "Healthy lifestyle"]
+        "info": "Analysis of the retinal fundus image shows signs consistent with diabetic retinopathy. Features may include microaneurysms, dot-blot hemorrhages, hard exudates, cotton-wool spots, venous beading, intraretinal microvascular abnormalities (IRMA), or neovascularization. Severity requires assessment by an ophthalmologist to determine stage and treatment needs.",
+        "symptoms": [
+          "Often asymptomatic in early stages (no symptoms)",
+          "Blurred or fluctuating vision",
+          "Floaters (dark spots or strings floating in vision)",
+          "Dark or empty areas in vision",
+          "Difficulty perceiving colors",
+          "Vision loss (in advanced stages)",
+          "Sudden vision loss (if vitreous hemorrhage or retinal detachment)",
+          "Difficulty with night vision",
+          "Shadows or missing areas in field of vision"
+        ],
+        "causes": [
+          "Chronic high blood glucose levels (primary cause)",
+          "High blood pressure (exacerbating factor)",
+          "High cholesterol",
+          "Duration of diabetes (longer duration = higher risk)",
+          "Poor glycemic control (high HbA1c)",
+          "Pregnancy (can accelerate retinopathy)",
+          "Kidney disease",
+          "Smoking",
+          "Genetic predisposition"
+        ],
+        "treatment_overview": "Treatment depends on severity and stage. Primary focus is strict diabetes control. Mild cases require monitoring. Moderate to severe cases may need laser photocoagulation, anti-VEGF injections, or surgery. **Requires regular monitoring by ophthalmologist with retina expertise. Vision loss can be prevented or slowed with timely treatment.**",
+        "diagnosis_methods": [
+          "Comprehensive dilated eye examination",
+          "Fundus photography (retinal imaging)",
+          "Optical Coherence Tomography (OCT)",
+          "Fluorescein angiography (FA)",
+          "OCT Angiography (OCTA) - non-invasive",
+          "Visual acuity testing",
+          "Tonometry (eye pressure)",
+          "Slit-lamp examination",
+          "Ultrawide-field retinal imaging"
+        ],
+        "prevention": [
+          "Intensive diabetes management (target HbA1c <7%)",
+          "Blood pressure control (<140/90, or <130/80 if tolerated)",
+          "Lipid management (LDL <100 mg/dL)",
+          "Regular dilated eye exams:",
+          "- Type 1 diabetes: Within 5 years of diagnosis, then annually",
+          "- Type 2 diabetes: At diagnosis, then annually",
+          "- More frequent if retinopathy present",
+          "Avoid smoking",
+          "Maintain healthy weight",
+          "Regular exercise",
+          "Control other risk factors (kidney disease, obesity)",
+          "Pregnancy planning and close monitoring if diabetic"
+        ],
+        "medications": {
+          "diabetes_control": [
+            {
+              "name": "Metformin",
+              "dosage": "500-2000mg daily in divided doses",
+              "notes": "First-line for type 2 diabetes; improves insulin sensitivity"
+            },
+            {
+              "name": "Insulin (various types)",
+              "dosage": "Individualized based on blood glucose",
+              "notes": "Essential for type 1, often needed in type 2; tight control reduces retinopathy risk"
+            },
+            {
+              "name": "GLP-1 Agonists (e.g., Semaglutide, Dulaglutide)",
+              "dosage": "Weekly injection",
+              "notes": "Improves glucose control, cardiovascular benefits"
+            },
+            {
+              "name": "SGLT2 Inhibitors (e.g., Empagliflozin, Dapagliflozin)",
+              "dosage": "Once daily",
+              "notes": "Reduces glucose, cardiovascular and kidney benefits"
+            }
+          ],
+          "blood_pressure": [
+            {
+              "name": "ACE Inhibitors (e.g., Lisinopril, Enalapril)",
+              "dosage": "10-40mg daily",
+              "notes": "Blood pressure control; renal protective"
+            },
+            {
+              "name": "ARBs (e.g., Losartan, Valsartan)",
+              "dosage": "50-100mg daily",
+              "notes": "Alternative to ACE inhibitors"
+            }
+          ],
+          "lipid_management": [
+            {
+              "name": "Statins (e.g., Atorvastatin, Rosuvastatin)",
+              "dosage": "10-80mg daily",
+              "notes": "Lowers cholesterol; may have retinal benefits"
+            },
+            {
+              "name": "Fenofibrate",
+              "dosage": "145mg daily",
+              "notes": "May slow diabetic retinopathy progression (FIELD and ACCORD studies)"
+            }
+          ],
+          "intravitreal_injections": [
+            {
+              "name": "Bevacizumab (Avastin)",
+              "dosage": "1.25mg injection",
+              "frequency": "Monthly initially, then as needed",
+              "notes": "Anti-VEGF; off-label use; treats macular edema and proliferative DR"
+            },
+            {
+              "name": "Ranibizumab (Lucentis)",
+              "dosage": "0.3mg or 0.5mg injection",
+              "frequency": "Monthly",
+              "notes": "FDA-approved anti-VEGF for diabetic macular edema"
+            },
+            {
+              "name": "Aflibercept (Eylea)",
+              "dosage": "2mg injection",
+              "frequency": "Every 4-8 weeks",
+              "notes": "FDA-approved anti-VEGF; longer duration"
+            },
+            {
+              "name": "Brolucizumab (Beovu)",
+              "dosage": "6mg injection",
+              "frequency": "Every 8-12 weeks after loading",
+              "notes": "Newer anti-VEGF; less frequent dosing"
+            },
+            {
+              "name": "Faricimab (Vabysmo)",
+              "dosage": "6mg injection",
+              "frequency": "Up to every 16 weeks",
+              "notes": "Dual-action anti-VEGF/anti-Ang2; extended intervals"
+            }
+          ],
+          "steroid_injections": [
+            {
+              "name": "Triamcinolone Acetonide",
+              "dosage": "4mg intravitreal injection",
+              "frequency": "Every 3-6 months",
+              "notes": "For refractory macular edema; risk of cataract and glaucoma"
+            },
+            {
+              "name": "Dexamethasone Implant (Ozurdex)",
+              "dosage": "0.7mg sustained-release implant",
+              "duration": "Lasts 3-6 months",
+              "notes": "For persistent macular edema"
+            },
+            {
+              "name": "Fluocinolone Acetonide Implant (Iluvien)",
+              "dosage": "0.19mg sustained-release implant",
+              "duration": "Lasts up to 36 months",
+              "notes": "For chronic diabetic macular edema"
+            }
+          ],
+          "oral_supplements": [
+            {
+              "name": "Vitamin D",
+              "dosage": "1000-2000 IU daily",
+              "notes": "May have protective retinal effects; maintain normal levels"
+            },
+            {
+              "name": "Omega-3 Fatty Acids",
+              "dosage": "1000-2000mg daily",
+              "notes": "Possible protective effects; cardiovascular benefits"
+            }
+          ]
+        },
+        "dr_classification": {
+          "mild_npdr": {
+            "description": "Mild Non-Proliferative DR: Microaneurysms only",
+            "treatment": "Optimize diabetes control, monitor every 6-12 months"
+          },
+          "moderate_npdr": {
+            "description": "Moderate Non-Proliferative DR: More than microaneurysms but less than severe",
+            "treatment": "Optimize control, monitor every 3-6 months, consider treatment if macular edema"
+          },
+          "severe_npdr": {
+            "description": "Severe Non-Proliferative DR: Extensive hemorrhages, venous beading, IRMA",
+            "treatment": "Close monitoring every 2-4 months, consider panretinal photocoagulation (PRP)"
+          },
+          "pdr": {
+            "description": "Proliferative DR: Neovascularization of disc or elsewhere, vitreous hemorrhage",
+            "treatment": "Panretinal photocoagulation (PRP), anti-VEGF injections, possible vitrectomy"
+          },
+          "dme": {
+            "description": "Diabetic Macular Edema: Retinal thickening involving macula",
+            "treatment": "Anti-VEGF injections, laser photocoagulation, steroids"
+          }
+        },
+        "laser_treatment": {
+          "focal_laser": {
+            "description": "Treats specific leaking blood vessels in macula",
+            "indication": "Focal diabetic macular edema"
+          },
+          "grid_laser": {
+            "description": "Pattern of laser burns in macula for diffuse leakage",
+            "indication": "Diffuse diabetic macular edema"
+          },
+          "prp": {
+            "description": "Panretinal Photocoagulation: 1200-2000 laser spots in peripheral retina",
+            "indication": "Severe NPDR, Proliferative DR",
+            "notes": "Causes regression of abnormal blood vessels"
+          }
+        },
+        "surgical_treatment": {
+          "vitrectomy": {
+            "description": "Surgical removal of vitreous gel",
+            "indications": [
+              "Non-clearing vitreous hemorrhage",
+              "Tractional retinal detachment",
+              "Combined traction-rhegmatogenous detachment",
+              "Severe proliferative diabetic retinopathy"
+            ],
+            "recovery": "Several weeks; vision improvement gradual"
+          }
+        },
+        "monitoring_schedule": {
+          "no_dr": "Annual exam",
+          "mild_npdr": "6-12 months",
+          "moderate_npdr": "3-6 months",
+          "severe_npdr": "2-4 months",
+          "pdr": "1-3 months or more frequent",
+          "dme": "1-3 months, more frequent if active treatment"
+        },
+        "warning_signs": [
+          "Sudden vision loss or severe blur",
+          "Sudden increase in floaters",
+          "Curtain or shadow in vision",
+          "Flashes of light",
+          "Complete loss of vision in one eye",
+          "Significant new decrease in vision",
+          "Eye pain with vision changes"
+        ],
+        "lifestyle_modifications": [
+          "Achieve and maintain target HbA1c <7%",
+          "Monitor blood glucose 3-4 times daily (type 1) or as recommended",
+          "Blood pressure <140/90 mmHg (or <130/80 if tolerated)",
+          "LDL cholesterol <100 mg/dL (or <70 if cardiovascular disease)",
+          "Stop smoking immediately",
+          "Limit alcohol consumption",
+          "Regular moderate exercise (150 min/week)",
+          "Heart-healthy diet (Mediterranean or DASH)",
+          "Maintain healthy weight (BMI <25)",
+          "Manage stress",
+          "Adequate sleep (7-9 hours)",
+          "Regular medical follow-up"
+        ]
       }
     }
   },
   "Skin Cancer": {
-    "description": "Skin cancer is the uncontrolled growth of abnormal skin cells, often caused by ultraviolet (UV) radiation exposure. It includes melanoma (the most dangerous type) and non-melanoma types.",
+    "description": "Skin cancer is the uncontrolled growth of abnormal skin cells, most commonly caused by ultraviolet (UV) radiation from sunlight or tanning beds. It includes melanoma (the most dangerous type, arising from pigment-producing melanocytes) and non-melanoma types (basal cell carcinoma and squamous cell carcinoma). Early detection is critical, especially for melanoma, as it can spread (metastasize) to other organs. Most skin cancers are curable if detected and treated early.",
     "model_config": {
-      "path": "models/skin_cancer_model.keras",
       "size": [224, 224]
     },
     "labels": ["Benign", "Malignant"],
     "details": {
       "Benign": {
-        "info": "The skin lesion image appears consistent with benign (non-cancerous) features such as uniform color, smooth borders, and symmetry.",
-        "symptoms": ["Stable mole", "Uniform color", "Smooth border", "Symmetrical shape"],
-        "causes": ["Normal melanocyte growth", "Genetic factors"],
-        "treatment_overview": "No cancer-specific treatment indicated. Regular monitoring and skin self-exams recommended.",
-        "diagnosis_methods": ["Dermatologist visual exam", "Dermatoscopy", "Skin biopsy (if uncertain)"],
-        "prevention": ["Use sunscreen (SPF 30+)", "Avoid tanning beds", "Wear protective clothing", "Regular skin checks"]
+        "info": "The skin lesion image appears consistent with benign (non-cancerous) features. Characteristics suggesting benignity include symmetrical shape, uniform color (typically one shade of brown/tan), smooth and well-defined borders, small size (<6mm), and stable appearance over time. Common benign lesions include normal moles (nevi), seborrheic keratoses, dermatofibromas, and skin tags.",
+        "symptoms": [
+          "Stable mole that hasn't changed",
+          "Uniform tan, brown, or flesh color",
+          "Smooth, regular borders",
+          "Symmetrical shape (both halves match)",
+          "Small size (typically <6mm/quarter-inch)",
+          "No itching, bleeding, or pain",
+          "Present for years without change"
+        ],
+        "causes": [
+          "Normal melanocyte (pigment cell) growth",
+          "Genetic factors (number and type of moles)",
+          "Sun exposure (can increase number of moles)",
+          "Age-related skin changes",
+          "Hormonal changes (pregnancy, puberty)"
+        ],
+        "treatment_overview": "No cancer-specific treatment indicated. Benign lesions generally require no treatment unless cosmetically concerning or causing irritation. Regular skin self-exams and periodic professional skin checks recommended. Monitor for any changes using the ABCDE rule. **If any changes occur, consult dermatologist promptly.**",
+        "diagnosis_methods": [
+          "Visual examination (naked eye)",
+          "Dermatoscopy (dermoscopy with magnification and light)",
+          "Total body photography (baseline for comparison)",
+          "Digital monitoring of lesions",
+          "Skin biopsy (if uncertain or changing)",
+          "Confocal microscopy (emerging technology)"
+        ],
+        "prevention": [
+          "Sun protection measures (see below)",
+          "Monthly skin self-examinations",
+          "Annual professional skin exam (or more frequent if high-risk)",
+          "Photograph moles for self-monitoring",
+          "Know your skin and personal/family history"
+        ],
+        "medications": [],
+        "monitoring": {
+          "self_exam": "Monthly total body skin check",
+          "professional_exam": "Annually, or every 3-6 months if high risk",
+          "abcde_rule": {
+            "A": "Asymmetry - one half doesn't match the other",
+            "B": "Border - irregular, scalloped, poorly defined",
+            "C": "Color - varied shades of brown, black, tan, red, white, blue",
+            "D": "Diameter - larger than 6mm (pencil eraser), though melanomas can be smaller",
+            "E": "Evolving - changes in size, shape, color, or symptoms"
+          }
+        },
+        "when_to_see_dermatologist": [
+          "New mole appearing after age 30",
+          "Existing mole that changes (size, shape, color)",
+          "Mole that itches, bleeds, or becomes painful",
+          "'Ugly duckling' - one mole looks different from others",
+          "Personal or family history of melanoma",
+          "Numerous moles (>50)",
+          "History of severe sunburns or tanning bed use"
+        ]
       },
       "Malignant": {
-        "info": "The image shows features consistent with malignant melanoma — such as irregular borders, color variation, or asymmetry.",
-        "symptoms": ["New or changing mole", "Irregular border", "Multiple colors (brown, black, red, white, blue)", "Itching or bleeding", "Rapid growth"],
-        "causes": ["Prolonged UV exposure (sunlight, tanning beds)", "Genetic mutations (BRAF, NRAS)", "Fair skin tone", "Family history of melanoma"],
-        "treatment_overview": "Early detection is critical. Treatment includes surgical excision, immunotherapy, targeted therapy, and chemotherapy depending on stage. **Consult a dermatologist or oncologist.**",
-        "diagnosis_methods": ["Visual/Dermatoscopic exam", "Biopsy and histopathology", "Molecular testing", "Sentinel lymph node biopsy (if needed)"],
-        "prevention": ["Limit UV exposure", "Use broad-spectrum sunscreen", "Avoid peak sun hours (10 AM–4 PM)", "Regular dermatologist visits"]
+        "info": "The skin lesion image shows features consistent with malignant melanoma or high concern for skin cancer. Characteristics include asymmetry, irregular or poorly defined borders, multiple colors (brown, black, red, white, blue), diameter greater than 6mm, and/or evolving (changing) appearance. Melanoma can appear as a new dark spot or a changing mole. Early detection and treatment are critical for cure.",
+        "symptoms": [
+          "New mole or growth appearing, especially after age 30",
+          "Existing mole that changes in size, shape, or color",
+          "Irregular, asymmetrical shape (halves don't match)",
+          "Border that is irregular, scalloped, or poorly defined",
+          "Multiple colors within one lesion (brown, black, tan, red, white, blue, pink)",
+          "Diameter larger than 6mm (size of pencil eraser), though melanomas can be smaller",
+          "Evolution - any change in size, shape, color, elevation, or symptoms",
+          "Itching or tenderness",
+          "Bleeding or oozing",
+          "Crusting or scabbing that doesn't heal",
+          "Firm or hard texture",
+          "Raised or elevated appearance",
+          "Satellite lesions (smaller spots near main lesion)",
+          "'Ugly duckling sign' - lesion looks different from other moles"
+        ],
+        "causes": [
+          "Ultraviolet (UV) radiation exposure:",
+          "- Chronic sun exposure",
+          "- History of severe sunburns (especially childhood)",
+          "- Tanning bed use",
+          "Genetic mutations:",
+          "- BRAF mutation (~50% of melanomas)",
+          "- NRAS mutation (~15-20%)",
+          "- c-KIT mutation (acral and mucosal melanomas)",
+          "- CDKN2A (p16) germline mutation (familial melanoma)",
+          "Fair skin, light hair, blue/green eyes (lower melanin protection)",
+          "Family history of melanoma",
+          "Personal history of melanoma or other skin cancers",
+          "Numerous moles (>50) or atypical moles",
+          "Weakened immune system",
+          "Age (risk increases with age, but can occur in young adults)",
+          "Xeroderma pigmentosum (rare genetic condition)"
+        ],
+        "treatment_overview": "Treatment depends on melanoma type, stage (thickness/depth, lymph node involvement, metastasis), and location. Early-stage melanoma is usually cured with surgical excision. Advanced melanoma requires systemic therapy (immunotherapy, targeted therapy, chemotherapy) and possibly radiation. **Melanoma is life-threatening if not treated early - immediate dermatologist evaluation is critical.**",
+        "diagnosis_methods": [
+          "Visual examination and dermatoscopy",
+          "Excisional biopsy (preferred - removes entire lesion with margin)",
+          "Incisional/punch biopsy (if large lesion)",
+          "Shave biopsy (generally avoided for suspected melanoma - may not show depth)",
+          "Histopathological examination (Breslow thickness, Clark level, mitotic rate, ulceration)",
+          "Molecular testing (BRAF, NRAS, c-KIT mutations)",
+          "Sentinel lymph node biopsy (for melanomas >0.8mm or high-risk features)",
+          "Imaging for staging:",
+          "- CT scan (chest, abdomen, pelvis)",
+          "- PET/CT scan",
+          "- MRI (brain if symptomatic or Stage III/IV)",
+          "- LDH blood test"
+        ],
+        "prevention": [
+          "Sun protection (most important):",
+          "- Broad-spectrum sunscreen SPF 30+ (apply generously, reapply every 2 hours)",
+          "- Seek shade, especially 10 AM - 4 PM",
+          "- Wear protective clothing (long sleeves, wide-brimmed hat, UV-blocking sunglasses)",
+          "- Avoid tanning beds completely",
+          "Early detection:",
+          "- Monthly skin self-exams (check entire body including scalp, nails, between toes)",
+          "- Annual professional skin exam",
+          "- More frequent exams if high risk (every 3-6 months)",
+          "- Photograph moles for monitoring",
+          "Lifestyle:",
+          "- Avoid sunburns (especially important in childhood)",
+          "- UV index awareness",
+          "- Vitamin D from diet/supplements instead of sun exposure"
+        ],
+        "medications": {
+          "surgical_treatment": [
+            {
+              "name": "Wide Local Excision",
+              "description": "Complete surgical removal with margins",
+              "margins": "0.5-2cm depending on thickness",
+              "notes": "Primary treatment for melanoma"
+            },
+            {
+              "name": "Sentinel Lymph Node Biopsy (SLNB)",
+              "indication": "Melanoma >0.8mm thickness or high-risk features",
+              "notes": "Determines if cancer spread to lymph nodes"
+            },
+            {
+              "name": "Lymph Node Dissection",
+              "indication": "Positive sentinel node or clinically palpable nodes",
+              "notes": "Complete removal of regional lymph nodes"
+            },
+            {
+              "name": "Mohs Micrographic Surgery",
+              "indication": "Lentigo maligna melanoma on face",
+              "notes": "Tissue-sparing technique with margin control"
+            }
+          ],
+          "immunotherapy": [
+            {
+              "name": "Pembrolizumab (Keytruda)",
+              "dosage": "200mg IV every 3 weeks or 400mg every 6 weeks",
+              "duration": "Up to 1 year (adjuvant) or until progression (metastatic)",
+              "notes": "Anti-PD-1 antibody; first-line for advanced melanoma and high-risk adjuvant"
+            },
+            {
+              "name": "Nivolumab (Opdivo)",
+              "dosage": "240mg IV every 2 weeks or 480mg every 4 weeks",
+              "duration": "Up to 1 year (adjuvant) or until progression",
+              "notes": "Anti-PD-1 antibody; approved for adjuvant and metastatic"
+            },
+            {
+              "name": "Ipilimumab (Yervoy)",
+              "dosage": "3mg/kg IV every 3 weeks for 4 doses",
+              "duration": "4 doses (induction)",
+              "notes": "Anti-CTLA-4 antibody; often combined with nivolumab"
+            },
+            {
+              "name": "Nivolumab + Ipilimumab Combination",
+              "dosage": "Nivolumab 1mg/kg + Ipilimumab 3mg/kg every 3 weeks x4, then Nivolumab alone",
+              "notes": "Superior efficacy but higher toxicity; for advanced melanoma"
+            },
+            {
+              "name": "High-Dose Interleukin-2 (IL-2)",
+              "dosage": "600,000-720,000 IU/kg IV every 8 hours",
+              "duration": "Up to 14 doses per cycle",
+              "notes": "Rarely used now; severe side effects; requires ICU"
+            }
+          ],
+          "targeted_therapy": [
+            {
+              "name": "Dabrafenib (Tafinlar)",
+              "dosage": "150mg twice daily",
+              "duration": "Until progression",
+              "notes": "BRAF V600E/K inhibitor; use with trametinib"
+            },
+            {
+              "name": "Trametinib (Mekinist)",
+              "dosage": "2mg once daily",
+              "duration": "Until progression",
+              "notes": "MEK inhibitor; combined with dabrafenib"
+            },
+            {
+              "name": "Vemurafenib (Zelboraf)",
+              "dosage": "960mg twice daily",
+              "duration": "Until progression",
+              "notes": "BRAF V600E inhibitor; monotherapy or with cobimetinib"
+            },
+            {
+              "name": "Cobimetinib (Cotellic)",
+              "dosage": "60mg once daily, 21 days on/7 days off",
+              "duration": "Until progression",
+              "notes": "MEK inhibitor; combined with vemurafenib"
+            },
+            {
+              "name": "Encorafenib (Braftovi)",
+              "dosage": "450mg once daily",
+              "duration": "Until progression",
+              "notes": "BRAF V600E/K inhibitor; combined with binimetinib"
+            },
+            {
+              "name": "Binimetinib (Mektovi)",
+              "dosage": "45mg twice daily",
+              "duration": "Until progression",
+              "notes": "MEK inhibitor; combined with encorafenib"
+            }
+          ],
+          "chemotherapy": [
+            {
+              "name": "Dacarbazine (DTIC)",
+              "dosage": "800-1000mg/m² IV every 3-4 weeks",
+              "notes": "Older chemotherapy; rarely used now (replaced by immunotherapy/targeted therapy)"
+            },
+            {
+              "name": "Temozolomide",
+              "dosage": "150-200mg/m² days 1-5 every 28 days",
+              "notes": "Oral alternative to dacarbazine; can cross blood-brain barrier"
+            },
+            {
+              "name": "Paclitaxel + Carboplatin",
+              "dosage": "Various regimens",
+              "notes": "For refractory disease after immunotherapy/targeted therapy"
+            }
+          ],
+          "radiation_therapy": [
+            {
+              "name": "Adjuvant Radiation",
+              "indication": "Positive margins, desmoplastic melanoma, extensive nodal disease",
+              "notes": "After surgery to reduce local recurrence"
+            },
+            {
+              "name": "Stereotactic Radiosurgery (SRS)",
+              "indication": "Brain metastases",
+              "notes": "Gamma Knife or CyberKnife for limited brain mets"
+            },
+            {
+              "name": "Palliative Radiation",
+              "indication": "Bone metastases, symptomatic lesions",
+              "notes": "For pain control and symptom relief"
+            }
+          ],
+          "supportive_care": [
+            {
+              "name": "Prednisone",
+              "dosage": "0.5-1mg/kg daily, taper",
+              "notes": "For immune-related adverse events from immunotherapy"
+            },
+            {
+              "name": "Methylprednisolone",
+              "dosage": "1-2mg/kg IV daily",
+              "notes": "For severe immune-related toxicity"
+            },
+            {
+              "name": "Infliximab",
+              "dosage": "5mg/kg IV",
+              "notes": "For steroid-refractory colitis from immunotherapy"
+            },
+            {
+              "name": "Ondansetron (Zofran)",
+              "dosage": "8mg every 8 hours",
+              "notes": "Anti-nausea for chemotherapy"
+            },
+            {
+              "name": "Diphenhydramine",
+              "dosage": "25-50mg every 6 hours",
+              "notes": "For rash from targeted therapy"
+            },
+            {
+              "name": "Doxycycline",
+              "dosage": "100mg twice daily",
+              "notes": "For acneiform rash from MEK inhibitors"
+            }
+          ]
+        },
+        "melanoma_types": {
+          "superficial_spreading": {
+            "percentage": "~70%",
+            "description": "Most common type; grows horizontally first, then vertically",
+            "location": "Trunk (men), legs (women)"
+          },
+          "nodular": {
+            "percentage": "~15-30%",
+            "description": "Aggressive; grows vertically from onset; often dark blue-black",
+            "location": "Trunk, head, neck"
+          },
+          "lentigo_maligna": {
+            "percentage": "~10-15%",
+            "description": "Develops slowly from precursor lesion (lentigo maligna)",
+            "location": "Sun-damaged skin, face, ears, arms"
+          },
+          "acral_lentiginous": {
+            "percentage": "~5%",
+            "description": "Most common in darker-skinned individuals; palms, soles, under nails",
+            "location": "Palms, soles, nail beds"
+          },
+          "amelanotic": {
+            "percentage": "~2-8%",
+            "description": "Lacks pigment; appears pink/red; often misdiagnosed",
+            "location": "Any location"
+          }
+        },
+        "staging": {
+          "stage_0": {
+            "description": "Melanoma in situ (confined to epidermis)",
+            "5_year_survival": "99%",
+            "treatment": "Wide local excision"
+          },
+          "stage_I": {
+            "description": "Thin melanoma <2mm, no lymph node spread",
+            "5_year_survival": "95-99%",
+            "treatment": "Wide local excision, consider SLNB"
+          },
+          "stage_II": {
+            "description": "Thicker melanoma (>1-4mm) or ulcerated, no lymph node spread",
+            "5_year_survival": "65-94%",
+            "treatment": "Wide local excision, SLNB, consider adjuvant therapy"
+          },
+          "stage_III": {
+            "description": "Lymph node involvement or in-transit metastases",
+            "5_year_survival": "40-78%",
+            "treatment": "Surgery + lymph node dissection, adjuvant immunotherapy or targeted therapy"
+          },
+          "stage_IV": {
+            "description": "Distant metastases (lungs, liver, brain, bone, distant skin)",
+            "5_year_survival": "15-25% (improved with new therapies)",
+            "treatment": "Systemic therapy (immunotherapy, targeted therapy), surgery/radiation for select metastases"
+          }
+        },
+        "prognostic_factors": {
+          "favorable": [
+            "Breslow thickness <1mm",
+            "No ulceration",
+            "Low mitotic rate",
+            "Negative lymph nodes",
+            "Female gender",
+            "Extremity location"
+          ],
+          "unfavorable": [
+            "Breslow thickness >4mm",
+            "Ulceration present",
+            "High mitotic rate (>1/mm²)",
+            "Positive lymph nodes",
+            "Elevated LDH",
+            "Axial (trunk) location",
+            "Nodular type"
+          ]
+        },
+        "warning_signs": [
+          "Any changing mole",
+          "New dark spot or growth",
+          "Mole that looks different from others ('ugly duckling')",
+          "Sore that doesn't heal",
+          "Spread of pigment from border into surrounding skin",
+          "Redness or swelling beyond border",
+          "Change in sensation (itching, tenderness, pain)",
+          "Change in surface (bleeding, oozing, crusting)",
+          "Appearance of lump or bump within a mole"
+        ],
+        "follow_up_schedule": {
+          "stage_0_I": "Every 6-12 months for 5 years, then annually",
+          "stage_II": "Every 3-6 months for 2 years, then every 6-12 months for 3 years, then annually",
+          "stage_III_IV": "Every 3-4 months for 2 years, then every 6 months for 3 years, then annually",
+          "imaging": "CT or PET/CT every 3-12 months depending on stage and symptoms"
+        }
       }
     }
   }
