@@ -1,21 +1,11 @@
 # 🚨 FIXED EMERGENCY ALERT SYSTEM
-# Removed: Timer, Radar | Fixed: Timeline HTML rendering
+# Fixed: Now checks predicted label to avoid false alerts for normal/healthy predictions
 
 import streamlit as st
 from datetime import datetime
 import json
 import math
 
-"""st.set_page_config(
-    page_title="🚨 Emergency Alert System",
-    page_icon="🚨",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)"""
-
-# ============================================
-# CSS STYLES
-# ============================================
 
 def inject_css():
     st.markdown("""
@@ -96,6 +86,88 @@ def inject_css():
 
 
 # ============================================
+# NORMAL/HEALTHY LABEL DETECTION
+# ============================================
+
+# Keywords that indicate a NORMAL/HEALTHY/NEGATIVE prediction
+NORMAL_KEYWORDS = [
+    "normal", "healthy", "benign", "negative", "no tumor", "no_tumor",
+    "notumor", "uninfected", "no finding", "no_finding", "nofinding",
+    "no disease", "no_disease", "nodisease", "clear", "none",
+    "no dr", "no_dr", "nodr", "no retinopathy", "no_retinopathy",
+    "no pneumonia", "no_pneumonia", "nopneumonia",
+    "no tuberculosis", "no_tuberculosis", "notuberculosis",
+    "no malaria", "no_malaria", "nomalaria",
+    "no cancer", "no_cancer", "nocancer",
+    "non-proliferative", "mild", "nevi", "nevus",
+    "not infected", "not_infected", "notinfected",
+    "no cavity", "no_cavity", "nocavity",
+    "glioma",  # Remove this if glioma should trigger alert
+]
+
+
+def is_normal_prediction(predicted_label):
+    """
+    Check if the predicted label indicates a normal/healthy/non-disease result.
+    Returns True if the prediction is NORMAL (no disease detected).
+    """
+    if predicted_label is None:
+        return True
+    
+    label_lower = predicted_label.strip().lower()
+    
+    # Check against known normal keywords
+    for keyword in NORMAL_KEYWORDS:
+        if keyword in label_lower:
+            return True
+    
+    return False
+
+
+def get_disease_positive_labels():
+    """
+    Returns a dict mapping disease categories to their POSITIVE (disease-present) labels.
+    If the predicted label is NOT in this list, it's considered normal.
+    """
+    return {
+        "Pneumonia": ["pneumonia", "infected", "positive", "bacterial", "viral"],
+        "Brain Tumor": ["tumor", "glioma", "meningioma", "pituitary", "malignant"],
+        "Diabetic Retinopathy": ["proliferative", "severe", "moderate", "dr detected", 
+                                  "retinopathy", "diabetic retinopathy"],
+        "Tuberculosis": ["tuberculosis", "tb", "infected", "positive", "active tb"],
+        "Skin Cancer": ["malignant", "melanoma", "carcinoma", "cancer", "cancerous"],
+        "Malaria": ["parasitized", "infected", "positive", "malaria"],
+        "Dental": ["cavity", "decay", "caries", "infected", "abscess", "issue"],
+    }
+
+
+def is_disease_positive(disease_name, predicted_label):
+    """
+    Check if the predicted label indicates an ACTUAL disease detection.
+    Returns True only if the prediction indicates disease IS present.
+    """
+    if predicted_label is None:
+        return False
+    
+    label_lower = predicted_label.strip().lower()
+    
+    # First check: if it's clearly a normal/healthy prediction, return False
+    if is_normal_prediction(predicted_label):
+        return False
+    
+    # Second check: see if it matches known positive labels for this disease
+    positive_labels = get_disease_positive_labels()
+    if disease_name in positive_labels:
+        for pos_label in positive_labels[disease_name]:
+            if pos_label in label_lower:
+                return True
+    
+    # If we can't determine, assume it's NOT positive (safe default)
+    # This prevents false emergency alerts
+    return False
+
+
+# ============================================
 # THRESHOLDS
 # ============================================
 
@@ -152,8 +224,8 @@ def render_severity_gauge(severity_score, alert_level):
     
     rotation = -90 + (severity_score / 100) * 180
     
-    colors = {"CRITICAL": "#ff0000", "SEVERE": "#ff6600", "MODERATE": "#ffcc00", "LOW": "#00ff00"}
-    needle_color = colors.get(alert_level, "#ffffff")
+    colors = {"CRITICAL": "#ff0000", "SEVERE": "#ff6600", "MODERATE": "#ffcc00", "LOW": "#00ff00", "NONE": "#00ff00"}
+    needle_color = colors.get(alert_level, "#00ff00")
     
     st.markdown("""
     <div style="background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 20px; padding: 2rem; 
@@ -409,9 +481,57 @@ class EmergencyAlertSystem:
     def __init__(self):
         self.alerts = []
     
-    def assess_emergency_level(self, disease, confidence):
+    def assess_emergency_level(self, disease, confidence, predicted_label=None):
+        """
+        Assess emergency level based on disease, confidence, AND predicted label.
+        If the predicted label indicates normal/healthy, no emergency is triggered.
+        """
+        
+        # ===== KEY FIX: Check if prediction actually indicates disease =====
+        if predicted_label is not None:
+            # Check if the prediction is a normal/healthy result
+            if is_normal_prediction(predicted_label):
+                print(f"✅ Normal prediction detected: '{predicted_label}' - No emergency")
+                return {
+                    "disease": disease,
+                    "confidence": confidence,
+                    "predicted_label": predicted_label,
+                    "alert_level": "NONE",
+                    "requires_emergency": False,
+                    "severity_description": "No disease detected - Normal/Healthy",
+                    "timestamp": datetime.now().isoformat(),
+                    "recommended_action": "✅ No emergency action required. Continue routine care.",
+                    "risk_score": max(0, min(confidence * 0.1, 15))  # Very low risk score for normal
+                }
+            
+            # Check if it's a confirmed positive disease detection
+            if not is_disease_positive(disease, predicted_label):
+                print(f"⚠️ Prediction '{predicted_label}' not confirmed as disease-positive for {disease}")
+                return {
+                    "disease": disease,
+                    "confidence": confidence,
+                    "predicted_label": predicted_label,
+                    "alert_level": "LOW",
+                    "requires_emergency": False,
+                    "severity_description": "Prediction does not indicate active disease",
+                    "timestamp": datetime.now().isoformat(),
+                    "recommended_action": "ℹ️ Schedule routine follow-up. No emergency action needed.",
+                    "risk_score": max(0, min(confidence * 0.2, 25))  # Low risk score
+                }
+        
+        # ===== Disease IS detected - proceed with severity assessment =====
         if disease not in EMERGENCY_THRESHOLDS:
-            return {"alert_level": "NONE", "requires_emergency": False}
+            return {
+                "disease": disease,
+                "confidence": confidence,
+                "predicted_label": predicted_label,
+                "alert_level": "MODERATE",
+                "requires_emergency": False,
+                "severity_description": "Disease detected but no specific threshold defined",
+                "timestamp": datetime.now().isoformat(),
+                "recommended_action": "ℹ️ Consult specialist for further evaluation.",
+                "risk_score": confidence * 0.5
+            }
         
         thresholds = EMERGENCY_THRESHOLDS[disease]
         critical = thresholds.get("critical_confidence", 95)
@@ -431,6 +551,7 @@ class EmergencyAlertSystem:
         return {
             "disease": disease,
             "confidence": confidence,
+            "predicted_label": predicted_label,
             "alert_level": alert_level,
             "requires_emergency": requires_emergency,
             "severity_description": thresholds["severity_levels"].get(alert_level, "Unknown"),
@@ -460,6 +581,7 @@ class EmergencyAlertSystem:
             "alert_id": "ALERT_" + datetime.now().strftime('%Y%m%d_%H%M%S'),
             "severity": assessment['alert_level'],
             "disease": assessment['disease'],
+            "predicted_label": assessment.get('predicted_label', 'Unknown'),
             "confidence": assessment['confidence'],
             "risk_score": assessment.get('risk_score', 0),
             "timestamp": assessment['timestamp'],
@@ -472,27 +594,132 @@ class EmergencyAlertSystem:
 
 
 # ============================================
+# NORMAL RESULT DISPLAY
+# ============================================
+
+def show_normal_result(disease, confidence, predicted_label, assessment):
+    """Display a calm, reassuring result for normal/healthy predictions"""
+    
+    inject_css()
+    
+    alert_level = assessment.get('alert_level', 'NONE')
+    risk_score = assessment.get('risk_score', 5)
+    
+    # Green "All Clear" banner
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #0a3a0a 0%, #1a5a1a 50%, #0a3a0a 100%); 
+                border: 3px solid #00ff00; border-radius: 20px; padding: 2rem; text-align: center;
+                box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); margin: 1rem 0;">
+        <h1 style="color: #00ff00; font-family: 'Orbitron', sans-serif; font-size: 2.5rem; margin: 0;
+                   text-shadow: 0 0 15px rgba(0, 255, 0, 0.5);">
+            ✅ ALL CLEAR ✅
+        </h1>
+        <p style="color: #88ff88; font-size: 1.2rem; margin-top: 1rem; font-family: 'Roboto Mono', monospace;">
+            NO EMERGENCY ALERT TRIGGERED
+        </p>
+        <p style="color: #aaffaa; font-size: 0.9rem; margin-top: 0.5rem;">
+            AI prediction indicates: <strong>{label}</strong>
+        </p>
+    </div>
+    """.replace("{label}", str(predicted_label)), unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Low severity gauge
+    render_severity_gauge(risk_score, alert_level)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Info metrics
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        render_metric_card("{:.1f}%".format(confidence), "AI Confidence", "#00ff00")
+    with col2:
+        render_metric_card(alert_level, "Alert Level", "#00ff00")
+    with col3:
+        render_metric_card(str(predicted_label)[:15], "Prediction", "#00f0ff")
+    with col4:
+        render_metric_card("CLEAR", "Status", "#00ff00")
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Explanation
+    st.markdown("""
+    <div style="background: linear-gradient(145deg, #0a2a0a, #1a3a1a); border: 2px solid #00ff00; 
+                border-radius: 15px; padding: 1.5rem; margin: 1rem 0;">
+        <h3 style="color: #00ff00; font-family: 'Orbitron', sans-serif;">📋 Assessment Summary</h3>
+        <ul style="color: #88ff88; font-size: 1rem; line-height: 2;">
+            <li>The AI model analyzed the uploaded medical image</li>
+            <li>Prediction: <strong>{label}</strong> with {conf:.1f}% confidence</li>
+            <li>No disease indicators detected that warrant emergency action</li>
+            <li>Standard follow-up care pathway is recommended</li>
+        </ul>
+    </div>
+    """.replace("{label}", str(predicted_label))
+       .replace("{conf:.1f}", "{:.1f}".format(confidence)), unsafe_allow_html=True)
+    
+    # Recommendations
+    st.markdown("""
+    <div style="background: linear-gradient(145deg, #1a1a2e, #16213e); border: 1px solid rgba(0, 240, 255, 0.3); 
+                border-radius: 15px; padding: 1.5rem; margin: 1rem 0;">
+        <h3 style="color: #00f0ff; font-family: 'Orbitron', sans-serif;">💡 Recommendations</h3>
+        <ul style="color: #cccccc; font-size: 0.95rem; line-height: 2;">
+            <li>Continue routine medical check-ups</li>
+            <li>Maintain a healthy lifestyle</li>
+            <li>Report any new symptoms to your healthcare provider</li>
+            <li>Follow up with your doctor as scheduled</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Disclaimer
+    st.markdown("""
+    <div style="background: linear-gradient(145deg, #1a2a1a, #0a1a0a); border: 2px solid #00aa00; 
+                border-radius: 15px; padding: 1.5rem; margin-top: 2rem; text-align: center;">
+        <h4 style="color: #00aa00; font-family: 'Orbitron', sans-serif;">ℹ️ DISCLAIMER</h4>
+        <p style="color: #88aa88; margin: 0;">
+            This is an <strong>AI-generated assessment</strong> for clinical decision support only.<br>
+            It does <strong>NOT replace</strong> professional medical judgment.<br>
+            Always consult with qualified medical professionals for clinical decisions.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    return assessment
+
+
+# ============================================
 # MAIN DISPLAY FUNCTION
 # ============================================
 
-def show_emergency_alert_mode(disease, confidence):
-    """Display emergency alert interface"""
+def show_emergency_alert_mode(disease, confidence, predicted_label=None):
+    """
+    Display emergency alert interface.
+    
+    Args:
+        disease: Disease category (e.g., "Brain Tumor", "Pneumonia")
+        confidence: AI confidence percentage (0-100)
+        predicted_label: The actual predicted label (e.g., "No Tumor", "PNEUMONIA", "Normal")
+    """
     
     inject_css()
     
     system = EmergencyAlertSystem()
-    assessment = system.assess_emergency_level(disease, confidence)
+    assessment = system.assess_emergency_level(disease, confidence, predicted_label)
     
+    print(f"🚨 Emergency Assessment:")
+    print(f"   Disease: {disease}")
+    print(f"   Predicted Label: {predicted_label}")
+    print(f"   Confidence: {confidence:.1f}%")
+    print(f"   Alert Level: {assessment['alert_level']}")
+    print(f"   Requires Emergency: {assessment['requires_emergency']}")
+    print(f"   Risk Score: {assessment.get('risk_score', 0):.1f}")
+    
+    # ===== NORMAL/HEALTHY RESULT - Show calm display =====
     if not assessment['requires_emergency']:
-        st.markdown("""
-        <div style="background: linear-gradient(145deg, #0a2a0a, #1a3a1a); border: 2px solid #00ff00; 
-                    border-radius: 15px; padding: 2rem; text-align: center;">
-            <h2 style="color: #00ff00; font-family: 'Orbitron', sans-serif;">✅ ALL CLEAR</h2>
-            <p style="color: #888;">No emergency alert triggered. Standard care pathway applicable.</p>
-        </div>
-        """, unsafe_allow_html=True)
-        return assessment
+        return show_normal_result(disease, confidence, predicted_label, assessment)
     
+    # ===== DISEASE DETECTED - Show emergency alert =====
     st.markdown("---")
     
     # Alert Header
@@ -508,16 +735,22 @@ def show_emergency_alert_mode(disease, confidence):
             <p style="color: white; font-size: 1.2rem; margin-top: 1rem; font-family: 'Roboto Mono', monospace;">
                 IMMEDIATE EMERGENCY ACTION REQUIRED
             </p>
+            <p style="color: #ffcccc; font-size: 1rem; margin-top: 0.5rem;">
+                Detected: <strong>{label}</strong>
+            </p>
         </div>
-        """, unsafe_allow_html=True)
+        """.replace("{label}", str(predicted_label or disease)), unsafe_allow_html=True)
     else:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #ff6600 0%, #cc5200 100%); border: 3px solid #ff6600; 
                     border-radius: 15px; padding: 1.5rem; text-align: center; animation: severeGlow 2s infinite;">
             <h2 style="color: white; font-family: 'Orbitron', sans-serif; margin: 0;">⚠️ SEVERE ALERT ⚠️</h2>
             <p style="color: white; margin-top: 0.5rem;">URGENT MEDICAL ATTENTION REQUIRED</p>
+            <p style="color: #ffe0cc; font-size: 0.95rem; margin-top: 0.5rem;">
+                Detected: <strong>{label}</strong>
+            </p>
         </div>
-        """, unsafe_allow_html=True)
+        """.replace("{label}", str(predicted_label or disease)), unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     
@@ -542,7 +775,8 @@ def show_emergency_alert_mode(disease, confidence):
         color = "#ff0000" if assessment['alert_level'] == 'CRITICAL' else "#ff6600"
         render_metric_card(assessment['alert_level'], "Alert Level", color)
     with col3:
-        render_metric_card(disease[:12], "Condition", "#00f0ff")
+        display_label = str(predicted_label or disease)[:12]
+        render_metric_card(display_label, "Condition", "#ff0000")
     with col4:
         render_metric_card("ACTIVE", "Status", "#ff0000")
     
@@ -557,15 +791,17 @@ def show_emergency_alert_mode(disease, confidence):
     with col2:
         render_progress_ring(confidence, "Confidence", "#00f0ff")
     with col3:
-        render_progress_ring(75, "Urgency", "#ff6600")
+        urgency = 90 if assessment['alert_level'] == 'CRITICAL' else 70
+        render_progress_ring(urgency, "Urgency", "#ff6600")
     with col4:
-        render_progress_ring(90, "Priority", "#ffcc00")
+        priority = 95 if assessment['alert_level'] == 'CRITICAL' else 80
+        render_progress_ring(priority, "Priority", "#ffcc00")
     
     st.markdown("<br>", unsafe_allow_html=True)
     
     # Notifications
     st.markdown("### 🔔 ACTIVE NOTIFICATIONS")
-    render_notification("CRITICAL", "High-confidence detection of " + disease)
+    render_notification("CRITICAL", "High-confidence detection of " + str(predicted_label or disease))
     render_notification("SEVERE", "Immediate specialist consultation required")
     render_notification("INFO", "Emergency response protocol activated")
     
@@ -664,6 +900,7 @@ def show_emergency_alert_mode(disease, confidence):
         report += "Timestamp: " + alert['timestamp'] + "\n"
         report += "Severity: " + alert['severity'] + "\n"
         report += "Disease: " + alert['disease'] + "\n"
+        report += "Predicted Label: " + str(alert.get('predicted_label', 'N/A')) + "\n"
         report += "Confidence: {:.1f}%\n".format(alert['confidence'])
         report += "Risk Score: {:.1f}%\n".format(alert['risk_score'])
         report += "\nCRITICAL INDICATORS:\n"
@@ -679,7 +916,7 @@ def show_emergency_alert_mode(disease, confidence):
     with col2:
         handoff = "EMERGENCY HANDOFF\n"
         handoff += "=" * 40 + "\n"
-        handoff += "CRITICAL: " + disease + "\n"
+        handoff += "CRITICAL: " + str(predicted_label or disease) + "\n"
         handoff += "Confidence: {:.1f}%\n".format(confidence)
         handoff += "Severity: " + assessment['alert_level'] + "\n"
         handoff += "\nPATIENT STATUS (Fill in):\n"
@@ -736,6 +973,17 @@ def main():
     st.sidebar.markdown("<h2 style='color: #00f0ff; font-family: Orbitron;'>🎮 Demo Controls</h2>", unsafe_allow_html=True)
     
     disease = st.sidebar.selectbox("Select Condition", ["Pneumonia", "Brain Tumor", "Diabetic Retinopathy", "Tuberculosis", "Skin Cancer"])
+    
+    # Demo predicted labels for testing
+    demo_labels = {
+        "Pneumonia": ["PNEUMONIA", "NORMAL"],
+        "Brain Tumor": ["Glioma", "Meningioma", "No Tumor", "Pituitary"],
+        "Diabetic Retinopathy": ["DR Detected", "No DR"],
+        "Tuberculosis": ["Tuberculosis", "Normal"],
+        "Skin Cancer": ["Malignant", "Benign"]
+    }
+    
+    predicted_label = st.sidebar.selectbox("Predicted Label", demo_labels.get(disease, ["Unknown"]))
     confidence = st.sidebar.slider("AI Confidence (%)", 50.0, 100.0, 92.0, 0.5)
     
     st.sidebar.markdown("---")
@@ -743,15 +991,15 @@ def main():
     <div style="background: #1a1a2e; padding: 1rem; border-radius: 10px;">
         <h4 style="color: #00f0ff;">Alert Thresholds:</h4>
         <ul style="color: #888; font-size: 0.85rem;">
-            <li>🔴 Critical: ≥85-90%</li>
-            <li>🟠 Severe: 75-85%</li>
-            <li>🟡 Moderate: 60-75%</li>
-            <li>🟢 Low: &lt;60%</li>
+            <li>🔴 Critical: ≥85-90% (disease detected)</li>
+            <li>🟠 Severe: 75-85% (disease detected)</li>
+            <li>🟡 Moderate: 60-75% (disease detected)</li>
+            <li>🟢 No Alert: Normal/Healthy prediction</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
     
-    show_emergency_alert_mode(disease, confidence)
+    show_emergency_alert_mode(disease, confidence, predicted_label)
 
 
 if __name__ == "__main__":

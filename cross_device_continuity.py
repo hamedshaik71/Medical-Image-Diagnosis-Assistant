@@ -314,7 +314,7 @@ def show_cross_device_continuity(username: str):
             
             # Generate app download QR
             if QR_AVAILABLE:
-                app_url = "https://mediai.app/mobile"
+                app_url = "https://mediaiapp.streamlit.app/"
                 app_qr = generate_qr_code(app_url, size=5)
                 if app_qr:
                     buffered = BytesIO()

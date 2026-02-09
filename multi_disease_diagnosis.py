@@ -889,16 +889,28 @@ def overlay_progression(base_image, progression_map):
 
 
 # --------------------------------------------------
-# Severity Interpretation
+# Severity Interpretation - FIXED
 # --------------------------------------------------
-def severity_label(confidence):
+def severity_label(confidence, predicted_label=None):
+    """
+    Returns severity level based on confidence AND predicted label.
+    If the prediction is normal/healthy, severity is always None/Low
+    regardless of how confident the model is.
+    """
+    # Import the normal detection from emergency_alert
+    from emergency_alert import is_normal_prediction
+    
+    # If predicted label indicates normal/healthy → no severity
+    if predicted_label is not None and is_normal_prediction(predicted_label):
+        return "None"
+    
+    # Only assign severity when disease IS detected
     if confidence < 50:
         return "Low"
     elif confidence < 75:
         return "Moderate"
     else:
         return "High"
-
 
 # --------------------------------------------------
 # Grad-CAM
@@ -1603,7 +1615,7 @@ with col1:
 with col2:
     st.metric("📊 Confidence", f"{confidence:.2f}%")
 with col3:
-    st.metric("⚠️ Severity", severity_label(confidence))
+    st.metric("⚠️ Severity", severity_label(confidence, labels[class_index]))
 
 # ==================================================
 # COMPUTE HEATMAP AND EXPLAINABILITY DATA
@@ -1698,7 +1710,7 @@ with tabs[0]:
     with col2:
         st.metric("Confidence", f"{confidence:.2f}%")
 
-    st.metric("Estimated Severity", severity_label(confidence))
+    st.metric("Estimated Severity", severity_label(confidence, labels[class_index]))
 
     st.markdown(
         "<div class='card'>"
@@ -1713,7 +1725,7 @@ with tabs[0]:
 **Condition:** {selected_disease}
 **Model Inference:** {labels[class_index]}
 **Model Confidence Estimate:** {confidence:.2f}%
-**Estimated Severity:** {severity_label(confidence)}
+**Estimated Severity:** {severity_label(confidence, labels[class_index])}
 
 **AI Findings:** The model detected visual patterns consistent with **{labels[class_index]}**.
 Regions highlighted by the explainability map indicate areas that most influenced the model's inference.
@@ -1725,7 +1737,7 @@ Regions highlighted by the explainability map indicate areas that most influence
 Condition: {selected_disease}
 Model Inference: {labels[class_index]}
 Confidence: {confidence:.2f}%
-Estimated Severity: {severity_label(confidence)}
+Estimated Severity: {severity_label(confidence, labels[class_index])}
 
 🔐 PRIVACY NOTICE: This report was generated with Privacy Overlay Mode.
 Personal patient information has been protected.
@@ -2165,7 +2177,7 @@ with tabs[12]:
 # Emergency Alert Tab
 with tabs[13]:
     if RoleBasedInterface.can_access_tab(current_role, "Emergency"):
-        show_emergency_alert_mode(selected_disease, confidence)
+        show_emergency_alert_mode(selected_disease, confidence, labels[class_index])
     else:
         show_access_denied_message("Emergency", "Doctor or Radiologist")
 
