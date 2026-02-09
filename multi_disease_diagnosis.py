@@ -916,7 +916,7 @@ def severity_label(confidence, predicted_label=None):
 # Grad-CAM
 # --------------------------------------------------
 def get_gradcam_heatmap(model, image_tensor, class_index):
-    """FIXED Grad-CAM with multiple methods"""
+    """FIXED Grad-CAM compatible with Keras 3.x"""
     try:
         if not isinstance(image_tensor, tf.Tensor):
             image_tensor = tf.convert_to_tensor(image_tensor, dtype=tf.float32)
@@ -924,6 +924,13 @@ def get_gradcam_heatmap(model, image_tensor, class_index):
             image_tensor = tf.cast(image_tensor, tf.float32)
 
         print(f"📊 Input tensor shape: {image_tensor.shape}")
+
+        # ===== KEY FIX: Build the model by calling it first =====
+        try:
+            _ = model(image_tensor, training=False)
+            print("✅ Model built successfully by calling it")
+        except Exception as build_err:
+            print(f"⚠️ Model build call failed: {build_err}")
 
         # Find best convolutional layer
         last_conv_layer = None
@@ -953,10 +960,34 @@ def get_gradcam_heatmap(model, image_tensor, class_index):
             print("❌ No suitable layer found")
             return create_fallback_heatmap(image_tensor.shape[1:3])
 
-        grad_model = tf.keras.models.Model(
-            inputs=model.input,
-            outputs=[last_conv_layer.output, model.output]
-        )
+        # ===== KEY FIX: Use model.inputs instead of model.input =====
+        try:
+            model_input = model.input
+        except AttributeError:
+            try:
+                model_input = model.inputs[0]
+            except Exception:
+                # Last resort: create a new input tensor
+                input_shape = image_tensor.shape[1:]
+                model_input = tf.keras.Input(shape=input_shape)
+                print(f"⚠️ Created new input with shape: {input_shape}")
+
+        try:
+            grad_model = tf.keras.models.Model(
+                inputs=model_input,
+                outputs=[last_conv_layer.output, model.output]
+            )
+        except Exception as gm_err:
+            print(f"⚠️ Standard grad_model failed: {gm_err}")
+            # Alternative: use functional approach
+            try:
+                grad_model = tf.keras.models.Model(
+                    inputs=model.inputs,
+                    outputs=[last_conv_layer.output, model.outputs[0]]
+                )
+            except Exception as gm_err2:
+                print(f"❌ All grad_model attempts failed: {gm_err2}")
+                return create_fallback_heatmap(image_tensor.shape[1:3])
 
         # METHOD 1: Standard Grad-CAM
         print("\n🔄 Computing standard Grad-CAM...")
@@ -1217,10 +1248,10 @@ with st.sidebar:
     st.markdown("## 🧭 Workflow")
 
     st.markdown("### 1️⃣ Select Condition")
-    selected_disease = st.selectbox("", DISEASE_NAMES)
+    selected_disease = st.selectbox("Select Condition", DISEASE_NAMES, label_visibility="collapsed")
 
     st.markdown("### 2️⃣ Upload Image")
-    uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"])
+    uploaded_file = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"], label_visibility="collapsed")
 
     st.markdown("---")
     st.caption("⚠️ Educational use only.\n\nNot medical advice.")
