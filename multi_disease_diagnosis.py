@@ -1754,7 +1754,7 @@ if selected_disease == "Skin Cancer":
 # ==================================================
 # 🔬 AI ANALYSIS - GET PREDICTIONS
 # ==================================================
-st.markdown("### 🔬 AI Analysis")
+#st.markdown("### 🔬 AI Analysis")
 
 # Get predictions
 try:
