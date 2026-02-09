@@ -1,4 +1,12 @@
 import streamlit as st
+
+# ✅ MUST BE THE VERY FIRST STREAMLIT COMMAND
+st.set_page_config(
+    page_title="🩺 Medical Image Diagnosis AI",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 import numpy as np
 import cv2
 import json
@@ -270,16 +278,6 @@ def _validate_disease_specific(disease_name, img_array, gray, width, height, asp
     else:
         print(f"✅ Generic validation passed for {disease_name}")
         return True, f"✅ Image accepted for {disease_name}.", 0.8
-
-
-# --------------------------------------------------
-# Page Config
-# --------------------------------------------------
-st.set_page_config(
-    page_title="🩺 Medical Image Diagnosis AI",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
 
 
 # --------------------------------------------------
