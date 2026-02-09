@@ -889,28 +889,139 @@ def overlay_progression(base_image, progression_map):
 
 
 # --------------------------------------------------
-# Severity Interpretation - FIXED
+# Severity Interpretation - COMPLETE FIX
 # --------------------------------------------------
+
+# Classification of predictions by risk level
+RISK_CLASSIFICATION = {
+    # === SKIN CANCER ===
+    "mel": "HIGH",           # Melanoma - most dangerous
+    "melanoma": "HIGH",
+    "bcc": "HIGH",           # Basal Cell Carcinoma - cancer
+    "basal cell carcinoma": "HIGH",
+    "akiec": "MODERATE",     # Actinic Keratoses - pre-cancerous
+    "actinic keratoses": "MODERATE",
+    "bkl": "NONE",           # Benign Keratosis - harmless
+    "benign keratosis": "NONE",
+    "df": "NONE",            # Dermatofibroma - harmless
+    "dermatofibroma": "NONE",
+    "nv": "NONE",            # Melanocytic Nevi (moles) - harmless
+    "melanocytic nevi": "NONE",
+    "moles": "NONE",
+    "vasc": "NONE",          # Vascular Lesions - harmless
+    "vascular lesions": "NONE",
+    "vascular": "NONE",
+    
+    # === BRAIN TUMOR ===
+    "glioma": "HIGH",
+    "meningioma": "HIGH",
+    "pituitary": "MODERATE",
+    "notumor": "NONE",
+    "no tumor": "NONE",
+    "no_tumor": "NONE",
+    
+    # === PNEUMONIA ===
+    "pneumonia": "HIGH",
+    "normal": "NONE",
+    
+    # === TUBERCULOSIS ===
+    "tuberculosis": "HIGH",
+    "tb": "HIGH",
+    
+    # === MALARIA ===
+    "parasitized": "HIGH",
+    "infected": "HIGH",
+    "uninfected": "NONE",
+    
+    # === DIABETIC RETINOPATHY ===
+    "proliferative": "HIGH",
+    "severe": "HIGH",
+    "moderate": "MODERATE",
+    "mild": "LOW",
+    "no dr": "NONE",
+    "no_dr": "NONE",
+    
+    # === DENTAL ===
+    "cavity": "MODERATE",
+    "caries": "MODERATE",
+    "decay": "MODERATE",
+    "healthy": "NONE",
+    
+    # === GENERIC ===
+    "benign": "NONE",
+    "malignant": "HIGH",
+    "positive": "HIGH",
+    "negative": "NONE",
+}
+
+
+def get_risk_level(predicted_label):
+    """
+    Get risk level based on the predicted label.
+    Returns: HIGH, MODERATE, LOW, or NONE
+    """
+    if predicted_label is None:
+        return "NONE"
+    
+    label_lower = predicted_label.strip().lower()
+    
+    # Direct match
+    if label_lower in RISK_CLASSIFICATION:
+        return RISK_CLASSIFICATION[label_lower]
+    
+    # Partial match
+    for key, risk in RISK_CLASSIFICATION.items():
+        if key in label_lower or label_lower in key:
+            return risk
+    
+    # Default: if we can't classify, return LOW
+    return "LOW"
+
+
 def severity_label(confidence, predicted_label=None):
     """
-    Returns severity level based on confidence AND predicted label.
-    If the prediction is normal/healthy, severity is always None/Low
-    regardless of how confident the model is.
-    """
-    # Import the normal detection from emergency_alert
-    from emergency_alert import is_normal_prediction
+    Returns severity level based on BOTH the predicted label AND confidence.
     
-    # If predicted label indicates normal/healthy → no severity
-    if predicted_label is not None and is_normal_prediction(predicted_label):
+    Logic:
+    - If prediction is NONE risk (benign/normal/healthy) → always "None"
+    - If prediction is LOW risk → "Low" regardless of confidence
+    - If prediction is MODERATE risk → scale with confidence
+    - If prediction is HIGH risk → scale with confidence
+    """
+    # Get the risk level of what was predicted
+    risk = get_risk_level(predicted_label)
+    
+    # NO RISK predictions - always None severity
+    if risk == "NONE":
         return "None"
     
-    # Only assign severity when disease IS detected
-    if confidence < 50:
-        return "Low"
-    elif confidence < 75:
-        return "Moderate"
-    else:
-        return "High"
+    # LOW RISK predictions
+    if risk == "LOW":
+        if confidence < 60:
+            return "Low"
+        else:
+            return "Low"  # Stay low regardless
+    
+    # MODERATE RISK predictions (like pre-cancerous, pituitary)
+    if risk == "MODERATE":
+        if confidence < 50:
+            return "Low"
+        elif confidence < 75:
+            return "Moderate"
+        else:
+            return "Moderate"  # Cap at moderate, not high
+    
+    # HIGH RISK predictions (like melanoma, glioma, pneumonia)
+    if risk == "HIGH":
+        if confidence < 50:
+            return "Low"
+        elif confidence < 75:
+            return "Moderate"
+        else:
+            return "High"
+    
+    # Fallback
+    return "Low"
 
 # --------------------------------------------------
 # Grad-CAM
@@ -1387,11 +1498,35 @@ elif selected_disease == "Diabetic Retinopathy":
     print(f"👁️ Fundus preprocessing: shape={img_array.shape}")
 
 elif selected_disease == "Skin Cancer":
-    # Skin lesions: RGB color
+    # Skin lesions: RGB color with proper preprocessing
     img_resized = image.convert('RGB').resize((input_w, input_h))
-    img_array = np.array(img_resized) / 255.0
-    
+    img_array = np.array(img_resized).astype(np.float32)
+
+    # Check if model expects 0-255 or 0-1 range
+    # Try to detect from model weights
+    try:
+        first_layer = model.layers[0]
+        if hasattr(first_layer, 'get_config'):
+            config = first_layer.get_config()
+            print(f"🔴 First layer config: {config}")
+    except Exception:
+        pass
+
+    # Standard normalization for skin cancer models
+    # Method 1: Simple /255 normalization
+    img_array_normalized = img_array / 255.0
+
+    # Method 2: ImageNet normalization (common for transfer learning models)
+    # mean = [0.485, 0.456, 0.406]
+    # std = [0.229, 0.224, 0.225]
+    # img_array_imagenet = (img_array / 255.0 - mean) / std
+
+    # Use simple normalization first
+    img_array = img_array_normalized
+
     print(f"🔴 Skin preprocessing: shape={img_array.shape}")
+    print(f"🔴 Pixel range: [{img_array.min():.4f}, {img_array.max():.4f}]")
+    print(f"🔴 Pixel mean: {img_array.mean():.4f}, std: {img_array.std():.4f}")
 
 else:
     # Default: RGB
@@ -1399,8 +1534,109 @@ else:
     img_array = np.array(img_resized) / 255.0
 
 # Create input tensor
+# Create input tensor
 input_tensor = np.expand_dims(img_array, axis=0).astype(np.float32)
 print(f"📊 Final input tensor shape: {input_tensor.shape}")
+
+# ✅ GET LABELS EARLY - needed by smart preprocessing and all downstream code
+labels = disease_info[selected_disease]["labels"]
+num_classes = len(labels)
+
+# ==================================================
+# 🔥 SMART PREPROCESSING - TRY MULTIPLE METHODS
+# ==================================================
+def try_multiple_preprocessing(model, image, input_h, input_w, input_channels, disease_name, labels):
+    """
+    Try multiple preprocessing methods and return the one that gives
+    the most reasonable (diverse) predictions.
+    For skin cancer, this helps avoid always predicting the same class.
+    """
+    methods = {}
+    
+    # Method 1: Simple /255
+    img_resized = image.convert('RGB').resize((input_w, input_h))
+    arr1 = np.array(img_resized).astype(np.float32) / 255.0
+    if input_channels == 1:
+        arr1 = np.mean(arr1, axis=-1, keepdims=True)
+    methods["divide_255"] = arr1
+    
+    # Method 2: /127.5 - 1 (range -1 to 1, used by MobileNet etc.)
+    arr2 = np.array(img_resized).astype(np.float32) / 127.5 - 1.0
+    if input_channels == 1:
+        arr2 = np.mean(arr2, axis=-1, keepdims=True)
+    methods["mobilenet_style"] = arr2
+    
+    # Method 3: ImageNet normalization
+    arr3 = np.array(img_resized).astype(np.float32) / 255.0
+    mean = np.array([0.485, 0.456, 0.406])
+    std = np.array([0.229, 0.224, 0.225])
+    arr3 = (arr3 - mean) / std
+    if input_channels == 1:
+        arr3 = np.mean(arr3, axis=-1, keepdims=True)
+    methods["imagenet_norm"] = arr3
+    
+    # Method 4: Raw 0-255 (some models expect this)
+    arr4 = np.array(img_resized).astype(np.float32)
+    if input_channels == 1:
+        arr4 = np.mean(arr4, axis=-1, keepdims=True)
+    methods["raw_255"] = arr4
+    
+    best_method = None
+    best_arr = None
+    best_entropy = -1
+    best_preds = None
+    
+    print(f"\n🔄 Testing {len(methods)} preprocessing methods for {disease_name}...")
+    
+    for method_name, arr in methods.items():
+        try:
+            tensor = np.expand_dims(arr, axis=0).astype(np.float32)
+            preds = model.predict(tensor, verbose=0).flatten()
+            
+            # Calculate entropy - higher entropy = more diverse predictions
+            # A model always predicting one class has LOW entropy
+            preds_safe = np.clip(preds, 1e-10, 1.0)
+            if np.sum(preds_safe) > 0:
+                preds_norm = preds_safe / np.sum(preds_safe)
+            else:
+                preds_norm = preds_safe
+            entropy = -np.sum(preds_norm * np.log(preds_norm + 1e-10))
+            
+            pred_class = int(np.argmax(preds))
+            pred_conf = float(preds[pred_class]) * 100
+            pred_label = labels[pred_class] if pred_class < len(labels) else "Unknown"
+            
+            print(f"  {method_name:20s} → {pred_label:20s} ({pred_conf:.1f}%) entropy={entropy:.4f}")
+            print(f"    Preds: {[f'{p:.4f}' for p in preds]}")
+            
+            if entropy > best_entropy:
+                best_entropy = entropy
+                best_method = method_name
+                best_arr = arr
+                best_preds = preds
+                
+        except Exception as e:
+            print(f"  {method_name:20s} → ERROR: {e}")
+    
+    print(f"\n✅ Best method: {best_method} (entropy={best_entropy:.4f})")
+    return best_arr, best_preds, best_method
+
+
+# Only use smart preprocessing for Skin Cancer (since it's the problematic one)
+# Get labels BEFORE smart preprocessing
+
+
+# Only use smart preprocessing for Skin Cancer (since it's the problematic one)
+if selected_disease == "Skin Cancer":
+    smart_arr, smart_preds, smart_method = try_multiple_preprocessing(
+        model, image, input_h, input_w, input_channels, selected_disease, labels
+    )
+    
+    if smart_preds is not None:
+        img_array = smart_arr
+        input_tensor = np.expand_dims(img_array, axis=0).astype(np.float32)
+        print(f"🔴 Using smart preprocessing: {smart_method}")
+        print(f"📊 Updated input tensor shape: {input_tensor.shape}")
 
 # ==================================================
 # 🔥 FIXED PREDICTION LOGIC FOR ALL DISEASES
@@ -1414,12 +1650,126 @@ except Exception as e:
     st.error(f"Prediction error: {e}")
     st.stop()
 
-# Get labels from disease_info
-labels = disease_info[selected_disease]["labels"]
-num_classes = len(labels)
 
-# 🐛 DEBUG MODE
-with st.expander("🔍 DEBUG: Raw Model Output (click to expand)"):
+# ==================================================
+# 🔥 SMART PREPROCESSING FOR SKIN CANCER
+# ==================================================
+def try_multiple_preprocessing(model, image, input_h, input_w, input_channels, disease_name, labels):
+    """
+    Try multiple preprocessing methods and return the one that gives
+    the most reasonable (diverse) predictions.
+    """
+    methods = {}
+    
+    # Method 1: Simple /255
+    img_resized = image.convert('RGB').resize((input_w, input_h))
+    arr1 = np.array(img_resized).astype(np.float32) / 255.0
+    if input_channels == 1:
+        arr1 = np.mean(arr1, axis=-1, keepdims=True)
+    methods["divide_255"] = arr1
+    
+    # Method 2: /127.5 - 1 (range -1 to 1, used by MobileNet etc.)
+    arr2 = np.array(img_resized).astype(np.float32) / 127.5 - 1.0
+    if input_channels == 1:
+        arr2 = np.mean(arr2, axis=-1, keepdims=True)
+    methods["mobilenet_style"] = arr2
+    
+    # Method 3: ImageNet normalization
+    arr3 = np.array(img_resized).astype(np.float32) / 255.0
+    mean = np.array([0.485, 0.456, 0.406])
+    std = np.array([0.229, 0.224, 0.225])
+    arr3 = (arr3 - mean) / std
+    if input_channels == 1:
+        arr3 = np.mean(arr3, axis=-1, keepdims=True)
+    methods["imagenet_norm"] = arr3
+    
+    # Method 4: Raw 0-255
+    arr4 = np.array(img_resized).astype(np.float32)
+    if input_channels == 1:
+        arr4 = np.mean(arr4, axis=-1, keepdims=True)
+    methods["raw_255"] = arr4
+    
+    best_method = None
+    best_arr = None
+    best_entropy = -1
+    best_preds = None
+    all_results = {}
+    
+    print(f"\n🔄 Testing {len(methods)} preprocessing methods for {disease_name}...")
+    
+    for method_name, arr in methods.items():
+        try:
+            tensor = np.expand_dims(arr, axis=0).astype(np.float32)
+            preds = model.predict(tensor, verbose=0).flatten()
+            
+            preds_safe = np.clip(preds, 1e-10, 1.0)
+            if np.sum(preds_safe) > 0:
+                preds_norm = preds_safe / np.sum(preds_safe)
+            else:
+                preds_norm = preds_safe
+            entropy = -np.sum(preds_norm * np.log(preds_norm + 1e-10))
+            
+            pred_class = int(np.argmax(preds))
+            pred_conf = float(preds[pred_class]) * 100
+            pred_label = labels[pred_class] if pred_class < len(labels) else "Unknown"
+            
+            all_results[method_name] = {
+                "label": pred_label,
+                "confidence": pred_conf,
+                "entropy": entropy,
+                "preds": preds
+            }
+            
+            print(f"  {method_name:20s} → {pred_label:20s} ({pred_conf:.1f}%) entropy={entropy:.4f}")
+            
+            if entropy > best_entropy:
+                best_entropy = entropy
+                best_method = method_name
+                best_arr = arr
+                best_preds = preds
+                
+        except Exception as e:
+            print(f"  {method_name:20s} → ERROR: {e}")
+            all_results[method_name] = {"label": "ERROR", "confidence": 0, "entropy": 0, "preds": None}
+    
+    print(f"\n✅ Best method: {best_method} (entropy={best_entropy:.4f})")
+    return best_arr, best_preds, best_method, all_results
+
+
+# Apply smart preprocessing for Skin Cancer
+smart_method = None
+smart_preds = None
+smart_results = None
+
+if selected_disease == "Skin Cancer":
+    smart_arr, smart_preds, smart_method, smart_results = try_multiple_preprocessing(
+        model, image, input_h, input_w, input_channels, selected_disease, labels
+    )
+    
+    if smart_preds is not None:
+        img_array = smart_arr
+        input_tensor = np.expand_dims(img_array, axis=0).astype(np.float32)
+        print(f"🔴 Using smart preprocessing: {smart_method}")
+
+# ==================================================
+# 🔬 AI ANALYSIS - GET PREDICTIONS
+# ==================================================
+st.markdown("### 🔬 AI Analysis")
+
+# Get predictions
+try:
+    if selected_disease == "Skin Cancer" and smart_preds is not None:
+        raw_preds = np.expand_dims(smart_preds, axis=0)
+        print(f"🔴 Using smart preprocessing predictions")
+    else:
+        raw_preds = model.predict(input_tensor, verbose=0)
+except Exception as e:
+    st.error(f"Prediction error: {e}")
+    st.stop()
+
+
+# 🐛 ENHANCED DEBUG MODE
+with st.expander("🔍 DEBUG: Raw Model Output (click to expand)", expanded=True):
     st.code(f"""
 Model Input Shape: {model.input_shape}
 Model Output Shape: {model.output_shape}
@@ -1428,14 +1778,55 @@ Raw Predictions Shape: {raw_preds.shape}
 Raw Predictions: {raw_preds}
 Labels: {labels}
 Number of Classes: {num_classes}
+
+=== ALL CLASS PROBABILITIES ===
+""")
+    
+    # Show all predictions with bar chart
+    pred_flat = raw_preds.flatten()
+    if len(pred_flat) <= len(labels):
+        pred_data = {}
+        for i, label_name in enumerate(labels):
+            if i < len(pred_flat):
+                pred_data[label_name] = float(pred_flat[i]) * 100
+        
+        st.markdown("**Class Probabilities:**")
+        for label_name, prob_val in sorted(pred_data.items(), key=lambda x: x[1], reverse=True):
+            bar_len = int(prob_val / 2)
+            bar = "█" * bar_len
+            st.code(f"{label_name:25s} {prob_val:6.2f}% {bar}")
+    
+    # Show image stats
+    st.code(f"""
+=== IMAGE STATS ===
+Image original size: {image.size}
+Preprocessed shape: {img_array.shape}
+Pixel value range: [{img_array.min():.4f}, {img_array.max():.4f}]
+Pixel mean: {img_array.mean():.4f}
+Pixel std: {img_array.std():.4f}
     """)
+    
+    # Show smart preprocessing results for Skin Cancer
+    if selected_disease == "Skin Cancer" and smart_results is not None:
+        st.markdown("---")
+        st.markdown("**🔧 Smart Preprocessing Results (all methods tested):**")
+        st.info(f"✅ Selected method: **{smart_method}**")
+        
+        for method_name, result in smart_results.items():
+            if result["preds"] is not None:
+                marker = " ✅ SELECTED" if method_name == smart_method else ""
+                st.code(f"""
+Method: {method_name}{marker}
+  Prediction: {result['label']} ({result['confidence']:.2f}%)
+  Entropy: {result['entropy']:.4f}
+  All probs: {[f"{p:.4f}" for p in result['preds']]}
+""")
 
 # ===== INTERPRET PREDICTIONS =====
-preds = raw_preds.flatten()  # Flatten to 1D array
+preds = raw_preds.flatten()
 print(f"📊 Flattened predictions: {preds}")
 print(f"📊 Labels: {labels}")
 
-# Determine prediction type based on output shape and values
 output_size = len(preds)
 
 if output_size == 1:
@@ -1443,41 +1834,33 @@ if output_size == 1:
     prob = float(preds[0])
     print(f"📊 Single sigmoid output: {prob:.6f}")
     
-    # Disease-specific label mapping
     if selected_disease == "Malaria":
-        # Malaria: Check label order
-        # Common: ["Uninfected", "Parasitized"] or ["Parasitized", "Uninfected"]
         label_0_lower = labels[0].lower()
         
         if "uninfected" in label_0_lower or "normal" in label_0_lower or "negative" in label_0_lower:
-            # labels[0] = Uninfected, labels[1] = Parasitized
-            # High prob = Parasitized (index 1)
             if prob >= 0.5:
-                class_index = 1  # Parasitized/Infected
+                class_index = 1
                 confidence = prob * 100
             else:
-                class_index = 0  # Uninfected
+                class_index = 0
                 confidence = (1 - prob) * 100
         else:
-            # labels[0] = Parasitized, labels[1] = Uninfected
-            # High prob = Parasitized (index 0)
             if prob >= 0.5:
-                class_index = 0  # Parasitized/Infected
+                class_index = 0
                 confidence = prob * 100
             else:
-                class_index = 1  # Uninfected
+                class_index = 1
                 confidence = (1 - prob) * 100
     
     elif selected_disease == "Pneumonia":
-        # Pneumonia: typically [NORMAL, PNEUMONIA]
         label_0_lower = labels[0].lower()
         
         if "normal" in label_0_lower or "healthy" in label_0_lower or "negative" in label_0_lower:
             if prob >= 0.5:
-                class_index = 1  # PNEUMONIA
+                class_index = 1
                 confidence = prob * 100
             else:
-                class_index = 0  # NORMAL
+                class_index = 0
                 confidence = (1 - prob) * 100
         else:
             if prob >= 0.5:
@@ -1488,15 +1871,14 @@ if output_size == 1:
                 confidence = (1 - prob) * 100
     
     elif selected_disease == "Tuberculosis":
-        # TB: typically [Normal, Tuberculosis]
         label_0_lower = labels[0].lower()
         
         if "normal" in label_0_lower or "healthy" in label_0_lower or "negative" in label_0_lower:
             if prob >= 0.5:
-                class_index = 1  # Tuberculosis
+                class_index = 1
                 confidence = prob * 100
             else:
-                class_index = 0  # Normal
+                class_index = 0
                 confidence = (1 - prob) * 100
         else:
             if prob >= 0.5:
@@ -1507,15 +1889,14 @@ if output_size == 1:
                 confidence = (1 - prob) * 100
     
     elif selected_disease == "Brain Tumor":
-        # Brain: typically [No Tumor, Tumor] for binary
         label_0_lower = labels[0].lower()
         
         if "no" in label_0_lower or "normal" in label_0_lower or "healthy" in label_0_lower:
             if prob >= 0.5:
-                class_index = 1  # Tumor
+                class_index = 1
                 confidence = prob * 100
             else:
-                class_index = 0  # No Tumor
+                class_index = 0
                 confidence = (1 - prob) * 100
         else:
             if prob >= 0.5:
@@ -1526,15 +1907,14 @@ if output_size == 1:
                 confidence = (1 - prob) * 100
     
     elif selected_disease == "Skin Cancer":
-        # Skin Cancer: typically [Benign, Malignant]
         label_0_lower = labels[0].lower()
         
         if "benign" in label_0_lower or "normal" in label_0_lower or "negative" in label_0_lower:
             if prob >= 0.5:
-                class_index = 1  # Malignant
+                class_index = 1
                 confidence = prob * 100
             else:
-                class_index = 0  # Benign
+                class_index = 0
                 confidence = (1 - prob) * 100
         else:
             if prob >= 0.5:
@@ -1545,15 +1925,14 @@ if output_size == 1:
                 confidence = (1 - prob) * 100
     
     elif selected_disease == "Dental":
-        # Dental: typically [Healthy, Cavity/Issue]
         label_0_lower = labels[0].lower()
         
         if "healthy" in label_0_lower or "normal" in label_0_lower or "negative" in label_0_lower:
             if prob >= 0.5:
-                class_index = 1  # Issue
+                class_index = 1
                 confidence = prob * 100
             else:
-                class_index = 0  # Healthy
+                class_index = 0
                 confidence = (1 - prob) * 100
         else:
             if prob >= 0.5:
@@ -1564,15 +1943,14 @@ if output_size == 1:
                 confidence = (1 - prob) * 100
     
     elif selected_disease == "Diabetic Retinopathy":
-        # DR: For binary, typically [No DR, DR]
         label_0_lower = labels[0].lower()
         
         if "no" in label_0_lower or "normal" in label_0_lower or "healthy" in label_0_lower:
             if prob >= 0.5:
-                class_index = 1  # DR
+                class_index = 1
                 confidence = prob * 100
             else:
-                class_index = 0  # No DR
+                class_index = 0
                 confidence = (1 - prob) * 100
         else:
             if prob >= 0.5:
@@ -1583,7 +1961,6 @@ if output_size == 1:
                 confidence = (1 - prob) * 100
     
     else:
-        # Default binary interpretation
         if prob >= 0.5:
             class_index = 1
             confidence = prob * 100
@@ -1613,7 +1990,6 @@ else:
     
     print(f"✅ Predicted class {class_index} with {confidence:.2f}%")
     
-    # Show all class probabilities
     for i, prob_val in enumerate(preds):
         if i < len(labels):
             print(f"   Class {i} ({labels[i]}): {prob_val*100:.2f}%")

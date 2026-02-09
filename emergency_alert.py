@@ -103,6 +103,9 @@ NORMAL_KEYWORDS = [
     "not infected", "not_infected", "notinfected",
     "no cavity", "no_cavity", "nocavity",
     "glioma",  # Remove this if glioma should trigger alert
+    "nv", "melanocytic nevi", "bkl", "benign keratosis",
+    "df", "dermatofibroma", "vasc", "vascular lesions",
+    "vascular", "moles", "mole",
 ]
 
 
@@ -126,16 +129,19 @@ def is_normal_prediction(predicted_label):
 
 def get_disease_positive_labels():
     """
-    Returns a dict mapping disease categories to their POSITIVE (disease-present) labels.
-    If the predicted label is NOT in this list, it's considered normal.
+    Returns labels that indicate ACTUAL disease requiring attention.
     """
     return {
         "Pneumonia": ["pneumonia", "infected", "positive", "bacterial", "viral"],
         "Brain Tumor": ["tumor", "glioma", "meningioma", "pituitary", "malignant"],
-        "Diabetic Retinopathy": ["proliferative", "severe", "moderate", "dr detected", 
+        "Diabetic Retinopathy": ["proliferative", "severe", "moderate", "dr detected",
                                   "retinopathy", "diabetic retinopathy"],
         "Tuberculosis": ["tuberculosis", "tb", "infected", "positive", "active tb"],
-        "Skin Cancer": ["malignant", "melanoma", "carcinoma", "cancer", "cancerous"],
+        "Skin Cancer": [
+            "mel", "melanoma",              # HIGH - most dangerous
+            "bcc", "basal cell carcinoma",   # HIGH - cancer  
+            "akiec", "actinic keratoses",    # MODERATE - pre-cancerous
+        ],
         "Malaria": ["parasitized", "infected", "positive", "malaria"],
         "Dental": ["cavity", "decay", "caries", "infected", "abscess", "issue"],
     }
@@ -481,45 +487,137 @@ class EmergencyAlertSystem:
     def __init__(self):
         self.alerts = []
     
+    def _get_risk_level(self, predicted_label):
+        """Get risk level for a predicted label"""
+        if predicted_label is None:
+            return "NONE"
+        
+        label_lower = predicted_label.strip().lower()
+        
+        risk_map = {
+            # NONE risk (safe/benign)
+            "nv": "NONE", "melanocytic nevi": "NONE", "bkl": "NONE",
+            "benign keratosis": "NONE", "df": "NONE", "dermatofibroma": "NONE",
+            "vasc": "NONE", "vascular lesions": "NONE", "vascular": "NONE",
+            "normal": "NONE", "healthy": "NONE", "benign": "NONE",
+            "notumor": "NONE", "no tumor": "NONE", "no_tumor": "NONE",
+            "uninfected": "NONE", "negative": "NONE", "no dr": "NONE",
+            "clear": "NONE", "moles": "NONE", "mole": "NONE",
+            "no finding": "NONE", "no_finding": "NONE",
+            "no pneumonia": "NONE", "no tuberculosis": "NONE",
+            "no malaria": "NONE", "no cancer": "NONE",
+            "no cavity": "NONE", "no retinopathy": "NONE",
+            
+            # LOW risk
+            "mild": "LOW",
+            "non-proliferative": "LOW",
+            
+            # MODERATE risk
+            "akiec": "MODERATE", "actinic keratoses": "MODERATE",
+            "pituitary": "MODERATE", "moderate": "MODERATE",
+            "cavity": "MODERATE", "caries": "MODERATE", "decay": "MODERATE",
+            
+            # HIGH risk
+            "mel": "HIGH", "melanoma": "HIGH",
+            "bcc": "HIGH", "basal cell carcinoma": "HIGH",
+            "glioma": "HIGH", "meningioma": "HIGH",
+            "pneumonia": "HIGH", "tuberculosis": "HIGH", "tb": "HIGH",
+            "parasitized": "HIGH", "malignant": "HIGH",
+            "proliferative": "HIGH", "severe": "HIGH",
+            "infected": "HIGH", "positive": "HIGH",
+            "cancer": "HIGH", "carcinoma": "HIGH",
+        }
+        
+        # Direct match
+        if label_lower in risk_map:
+            return risk_map[label_lower]
+        
+        # Partial match
+        for key, risk in risk_map.items():
+            if key in label_lower or label_lower in key:
+                return risk
+        
+        return "LOW"
+    
+    def _get_moderate_description(self, disease, predicted_label):
+        """Get description for moderate risk predictions"""
+        descriptions = {
+            "akiec": "Pre-cancerous lesion (Actinic Keratoses) - requires monitoring and possible treatment",
+            "actinic keratoses": "Pre-cancerous lesion - requires monitoring and possible treatment",
+            "pituitary": "Pituitary tumor detected - requires specialist evaluation",
+            "moderate": "Moderate severity detected - requires follow-up",
+            "cavity": "Dental cavity detected - requires dental treatment",
+            "caries": "Dental caries detected - requires dental treatment",
+            "decay": "Dental decay detected - requires dental treatment",
+        }
+        
+        if predicted_label:
+            label_lower = predicted_label.strip().lower()
+            for key, desc in descriptions.items():
+                if key in label_lower:
+                    return desc
+        
+        return f"Moderate condition detected for {disease} - follow-up recommended"
+    
     def assess_emergency_level(self, disease, confidence, predicted_label=None):
         """
         Assess emergency level based on disease, confidence, AND predicted label.
-        If the predicted label indicates normal/healthy, no emergency is triggered.
+        Uses risk classification to determine proper alert level.
         """
         
-        # ===== KEY FIX: Check if prediction actually indicates disease =====
+        # ===== Get risk level from predicted label =====
         if predicted_label is not None:
-            # Check if the prediction is a normal/healthy result
-            if is_normal_prediction(predicted_label):
-                print(f"✅ Normal prediction detected: '{predicted_label}' - No emergency")
+            risk = self._get_risk_level(predicted_label)
+            
+            # NO RISK - completely safe predictions (benign, normal, moles, etc.)
+            if risk == "NONE":
+                print(f"✅ Safe prediction: '{predicted_label}' - No emergency")
                 return {
                     "disease": disease,
                     "confidence": confidence,
                     "predicted_label": predicted_label,
                     "alert_level": "NONE",
                     "requires_emergency": False,
-                    "severity_description": "No disease detected - Normal/Healthy",
+                    "severity_description": "No disease detected - Normal/Benign",
                     "timestamp": datetime.now().isoformat(),
                     "recommended_action": "✅ No emergency action required. Continue routine care.",
-                    "risk_score": max(0, min(confidence * 0.1, 15))  # Very low risk score for normal
+                    "risk_score": max(0, min(confidence * 0.05, 10))
                 }
             
-            # Check if it's a confirmed positive disease detection
-            if not is_disease_positive(disease, predicted_label):
-                print(f"⚠️ Prediction '{predicted_label}' not confirmed as disease-positive for {disease}")
+            # LOW RISK - minimal concern
+            if risk == "LOW":
+                print(f"ℹ️ Low risk prediction: '{predicted_label}'")
                 return {
                     "disease": disease,
                     "confidence": confidence,
                     "predicted_label": predicted_label,
                     "alert_level": "LOW",
                     "requires_emergency": False,
-                    "severity_description": "Prediction does not indicate active disease",
+                    "severity_description": "Low risk - routine monitoring recommended",
                     "timestamp": datetime.now().isoformat(),
                     "recommended_action": "ℹ️ Schedule routine follow-up. No emergency action needed.",
-                    "risk_score": max(0, min(confidence * 0.2, 25))  # Low risk score
+                    "risk_score": max(0, min(confidence * 0.15, 20))
                 }
+            
+            # MODERATE RISK - needs attention but not emergency (akiec, pituitary, etc.)
+            if risk == "MODERATE":
+                print(f"⚠️ Moderate risk prediction: '{predicted_label}'")
+                return {
+                    "disease": disease,
+                    "confidence": confidence,
+                    "predicted_label": predicted_label,
+                    "alert_level": "MODERATE",
+                    "requires_emergency": False,
+                    "severity_description": self._get_moderate_description(disease, predicted_label),
+                    "timestamp": datetime.now().isoformat(),
+                    "recommended_action": self._get_action(disease, "MODERATE"),
+                    "risk_score": max(20, min(confidence * 0.5, 55))
+                }
+            
+            # HIGH RISK - fall through to threshold-based assessment below
+            print(f"🚨 High risk prediction: '{predicted_label}'")
         
-        # ===== Disease IS detected - proceed with severity assessment =====
+        # ===== HIGH RISK - Disease IS detected, assess severity =====
         if disease not in EMERGENCY_THRESHOLDS:
             return {
                 "disease": disease,
@@ -591,7 +689,6 @@ class EmergencyAlertSystem:
         }
         self.alerts.append(alert)
         return alert
-
 
 # ============================================
 # NORMAL RESULT DISPLAY
