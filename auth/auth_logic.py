@@ -1,4 +1,3 @@
-# **`auth_logic.py` - CLEAN PRODUCTION VERSION**
 """
 🔐 Enhanced Authentication Logic
 - Advanced security features
@@ -6,7 +5,7 @@
 - Login attempt tracking
 - Account lockout
 - Password hashing
-- LOGIN WITH USERNAME OR EMAIL
+- LOGIN WITH USERNAME OR EMAIL (Single Input Field)
 """
 
 import streamlit as st
@@ -157,9 +156,20 @@ def validate_username(username: str) -> Tuple[bool, str]:
 # ============================================
 # 🔍 USER LOOKUP HELPER
 # ============================================
+def detect_input_type(identifier: str) -> str:
+    """
+    Detect if input is email or username
+    Returns: 'email' or 'username'
+    """
+    if '@' in identifier and '.' in identifier:
+        return 'email'
+    return 'username'
+
+
 def find_user_by_identifier(identifier: str) -> Tuple[Optional[str], Optional[dict]]:
     """
     Find user by username OR email (case-insensitive)
+    Automatically detects if input is email or username
     Returns: (username, user_data) or (None, None) if not found
     """
     if not identifier:
@@ -172,16 +182,20 @@ def find_user_by_identifier(identifier: str) -> Tuple[Optional[str], Optional[di
     identifier = identifier.strip()
     identifier_lower = identifier.lower()
     
-    # Check for username match (case-insensitive)
-    for username, user_data in users.items():
-        if username.lower() == identifier_lower:
-            return username, user_data
+    # Detect input type
+    input_type = detect_input_type(identifier)
     
-    # Check for email match (case-insensitive)
-    for username, user_data in users.items():
-        user_email = user_data.get("email", "")
-        if user_email and user_email.lower() == identifier_lower:
-            return username, user_data
+    if input_type == 'email':
+        # Search by email
+        for username, user_data in users.items():
+            user_email = user_data.get("email", "")
+            if user_email and user_email.lower() == identifier_lower:
+                return username, user_data
+    else:
+        # Search by username (case-insensitive)
+        for username, user_data in users.items():
+            if username.lower() == identifier_lower:
+                return username, user_data
     
     return None, None
 
@@ -282,6 +296,8 @@ def send_otp_email(email: str, otp: str, purpose: str = "verification") -> bool:
             "attempts": 0
         }
         save_otp_data(otp_data)
+        # In development, print OTP to console
+        print(f"📧 OTP for {email}: {otp}")
         return True
     except:
         return False
@@ -477,58 +493,69 @@ def register_user(
 
 
 # ============================================
-# 🔑 USER AUTHENTICATION
+# 🔑 USER AUTHENTICATION - FLEXIBLE LOGIN
 # ============================================
-def authenticate_user(identifier: str, password: str) -> Tuple[bool, str]:
+def authenticate_user(login_input: str, password: str) -> Tuple[bool, str]:
     """
     Authenticate user with USERNAME or EMAIL
+    Automatically detects if input is email or username
     
     Args:
-        identifier: Username or email address
+        login_input: Username or email address (auto-detected)
         password: User's password
         
     Returns:
         (success, message) tuple
     """
     
-    if not identifier or not password:
-        return False, "❌ Please enter both username/email and password"
+    if not login_input or not password:
+        return False, "❌ Please enter username/email and password"
     
-    identifier = identifier.strip()
+    login_input = login_input.strip()
     password = password.strip()
     
-    locked, remaining = is_account_locked(identifier)
+    # Check if account is locked
+    locked, remaining = is_account_locked(login_input)
     if locked:
         return False, f"🔒 Account locked. Try again in {remaining} minutes."
     
-    username, user = find_user_by_identifier(identifier)
+    # Find user by username or email (auto-detect)
+    username, user = find_user_by_identifier(login_input)
     
     if not user or not username:
-        record_failed_login(identifier)
-        return False, "❌ Invalid username/email or password"
+        record_failed_login(login_input)
+        # Detect what type of input was provided for better error message
+        input_type = detect_input_type(login_input)
+        if input_type == 'email':
+            return False, "❌ Email not found or incorrect password"
+        else:
+            return False, "❌ Username not found or incorrect password"
     
+    # Verify password
     stored_password_hash = user.get("password", "")
     
     if not stored_password_hash:
         return False, "❌ Account configuration error. Please contact support."
     
     if not verify_password(password, stored_password_hash):
-        record_failed_login(identifier)
-        attempts = get_login_attempts(identifier)
+        record_failed_login(login_input)
+        attempts = get_login_attempts(login_input)
         remaining = MAX_LOGIN_ATTEMPTS - attempts["count"]
         
         if remaining <= 0:
-            return False, f"🔒 Account locked for {LOCKOUT_DURATION} minutes due to too many failed attempts"
+            return False, f"🔒 Account locked for {LOCKOUT_DURATION} minutes"
         elif remaining <= 2:
-            return False, f"❌ Invalid password. ⚠️ {remaining} attempts remaining before lockout!"
+            return False, f"❌ Incorrect password. ⚠️ {remaining} attempts remaining!"
         else:
-            return False, "❌ Invalid username/email or password"
+            return False, "❌ Incorrect password"
     
-    clear_login_attempts(identifier)
+    # Successful login - clear all related login attempts
+    clear_login_attempts(login_input)
     clear_login_attempts(username)
     if user.get("email"):
         clear_login_attempts(user["email"])
     
+    # Update session state
     st.session_state.authenticated = True
     st.session_state.current_user = username
     st.session_state.current_role = user.get("role", "User")
@@ -536,15 +563,17 @@ def authenticate_user(identifier: str, password: str) -> Tuple[bool, str]:
     st.session_state.user_avatar = user.get("avatar", username[0].upper())
     st.session_state.login_time = datetime.now().isoformat()
     
+    # Update user stats
     users = load_users()
     if username in users:
         users[username]["last_login"] = datetime.now().isoformat()
         users[username]["login_count"] = users[username].get("login_count", 0) + 1
         save_users(users)
     
-    login_method = get_identifier_type(identifier)
-    if login_method == "email":
-        return True, f"✅ Welcome back, {username}! 🎉 (Logged in via email)"
+    # Personalized welcome message
+    input_type = detect_input_type(login_input)
+    if input_type == 'email':
+        return True, f"✅ Welcome back, {username}! 🎉"
     else:
         return True, f"✅ Welcome back, {username}! 🎉"
 
@@ -622,6 +651,19 @@ def reset_session():
     st.session_state.show_forgot_password = False
     st.session_state.reset_step = "email"
     st.session_state.reset_email = None
+
+
+# ============================================
+# 🚀 HELPER FUNCTIONS FOR LOGIN FORM
+# ============================================
+def get_login_input_placeholder() -> str:
+    """Get dynamic placeholder text for login input"""
+    return "Enter username or email"
+
+
+def get_login_input_help() -> str:
+    """Get help text for login input"""
+    return "You can use either your username or email address to login"
 
 
 # Initialize database on import
