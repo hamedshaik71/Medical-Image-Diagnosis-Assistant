@@ -5,6 +5,7 @@
 - Login attempt tracking
 - Account lockout
 - Password hashing (demo)
+- **LOGIN WITH USERNAME OR EMAIL**
 """
 
 import streamlit as st
@@ -141,23 +142,61 @@ def validate_username(username: str) -> Tuple[bool, str]:
 
 
 # ============================================
+# 🔍 USER LOOKUP HELPER
+# ============================================
+def find_user_by_identifier(identifier: str) -> Tuple[Optional[str], Optional[dict]]:
+    """
+    Find user by username OR email
+    Returns: (username, user_data) or (None, None) if not found
+    """
+    users = load_users()
+    identifier_lower = identifier.lower()
+    
+    # First, try exact username match
+    if identifier in users:
+        return identifier, users[identifier]
+    
+    # Try case-insensitive username match
+    for username, user_data in users.items():
+        if username.lower() == identifier_lower:
+            return username, user_data
+    
+    # Try email match
+    for username, user_data in users.items():
+        if user_data.get("email", "").lower() == identifier_lower:
+            return username, user_data
+    
+    return None, None
+
+
+def get_identifier_type(identifier: str) -> str:
+    """Determine if identifier is email or username"""
+    if validate_email(identifier):
+        return "email"
+    return "username"
+
+
+# ============================================
 # 🚫 LOGIN ATTEMPT TRACKING
 # ============================================
 MAX_LOGIN_ATTEMPTS = 5
 LOCKOUT_DURATION = 15  # minutes
 
 
-def get_login_attempts(username: str) -> dict:
-    """Get login attempts for a user"""
+def get_login_attempts(identifier: str) -> dict:
+    """Get login attempts for a user (by username or email)"""
     attempts = load_login_attempts()
-    return attempts.get(username, {"count": 0, "last_attempt": None, "locked_until": None})
+    # Normalize identifier to lowercase for consistency
+    identifier_key = identifier.lower()
+    return attempts.get(identifier_key, {"count": 0, "last_attempt": None, "locked_until": None})
 
 
-def record_failed_login(username: str):
+def record_failed_login(identifier: str):
     """Record a failed login attempt"""
     attempts = load_login_attempts()
+    identifier_key = identifier.lower()
     
-    user_attempts = attempts.get(username, {"count": 0, "last_attempt": None, "locked_until": None})
+    user_attempts = attempts.get(identifier_key, {"count": 0, "last_attempt": None, "locked_until": None})
     user_attempts["count"] = user_attempts.get("count", 0) + 1
     user_attempts["last_attempt"] = datetime.now().isoformat()
     
@@ -165,21 +204,22 @@ def record_failed_login(username: str):
     if user_attempts["count"] >= MAX_LOGIN_ATTEMPTS:
         user_attempts["locked_until"] = (datetime.now() + timedelta(minutes=LOCKOUT_DURATION)).isoformat()
     
-    attempts[username] = user_attempts
+    attempts[identifier_key] = user_attempts
     save_login_attempts(attempts)
 
 
-def clear_login_attempts(username: str):
+def clear_login_attempts(identifier: str):
     """Clear login attempts after successful login"""
     attempts = load_login_attempts()
-    if username in attempts:
-        del attempts[username]
+    identifier_key = identifier.lower()
+    if identifier_key in attempts:
+        del attempts[identifier_key]
         save_login_attempts(attempts)
 
 
-def is_account_locked(username: str) -> Tuple[bool, Optional[int]]:
+def is_account_locked(identifier: str) -> Tuple[bool, Optional[int]]:
     """Check if account is locked, return remaining lockout time"""
-    user_attempts = get_login_attempts(username)
+    user_attempts = get_login_attempts(identifier)
     
     if user_attempts.get("locked_until"):
         locked_until = datetime.fromisoformat(user_attempts["locked_until"])
@@ -188,7 +228,7 @@ def is_account_locked(username: str) -> Tuple[bool, Optional[int]]:
             return True, remaining
         else:
             # Lockout expired, clear attempts
-            clear_login_attempts(username)
+            clear_login_attempts(identifier)
     
     return False, None
 
@@ -406,38 +446,49 @@ def register_user(
 
 
 # ============================================
-# 🔑 USER AUTHENTICATION
+# 🔑 USER AUTHENTICATION (WITH EMAIL OR USERNAME)
 # ============================================
-def authenticate_user(username: str, password: str) -> Tuple[bool, str]:
-    """Authenticate user with security checks"""
+def authenticate_user(identifier: str, password: str) -> Tuple[bool, str]:
+    """
+    Authenticate user with USERNAME or EMAIL
     
-    # Check if account is locked
-    locked, remaining = is_account_locked(username)
+    Args:
+        identifier: Username or email address
+        password: User's password
+        
+    Returns:
+        (success, message) tuple
+    """
+    
+    # Check if account is locked (use identifier as key)
+    locked, remaining = is_account_locked(identifier)
     if locked:
-        return False, f"Account locked. Try again in {remaining} minutes."
+        return False, f"🔒 Account locked. Try again in {remaining} minutes."
     
-    users = load_users()
-    user = users.get(username)
+    # Find user by username or email
+    username, user = find_user_by_identifier(identifier)
     
     if not user:
-        record_failed_login(username)
-        return False, "Invalid username or password"
+        record_failed_login(identifier)
+        return False, "❌ Invalid credentials"
     
     # Verify password
     if not verify_password(password, user.get("password", "")):
-        record_failed_login(username)
-        attempts = get_login_attempts(username)
+        record_failed_login(identifier)
+        attempts = get_login_attempts(identifier)
         remaining = MAX_LOGIN_ATTEMPTS - attempts["count"]
         
         if remaining <= 0:
-            return False, f"Account locked for {LOCKOUT_DURATION} minutes"
+            return False, f"🔒 Account locked for {LOCKOUT_DURATION} minutes due to too many failed attempts"
         elif remaining <= 2:
-            return False, f"Invalid password. {remaining} attempts remaining before lockout."
+            return False, f"❌ Invalid password. ⚠️ {remaining} attempts remaining before lockout!"
         else:
-            return False, "Invalid username or password"
+            return False, "❌ Invalid credentials"
     
-    # Successful login
+    # Successful login - clear attempts for both username and email
+    clear_login_attempts(identifier)
     clear_login_attempts(username)
+    clear_login_attempts(user.get("email", ""))
     
     # Update session state
     st.session_state.authenticated = True
@@ -448,11 +499,17 @@ def authenticate_user(username: str, password: str) -> Tuple[bool, str]:
     st.session_state.login_time = datetime.now().isoformat()
     
     # Update user stats
+    users = load_users()
     users[username]["last_login"] = datetime.now().isoformat()
     users[username]["login_count"] = users[username].get("login_count", 0) + 1
     save_users(users)
     
-    return True, f"Welcome back, {username}! 🎉"
+    # Determine login method for personalized message
+    login_method = get_identifier_type(identifier)
+    if login_method == "email":
+        return True, f"✅ Welcome back, {username}! 🎉 (Logged in via email)"
+    else:
+        return True, f"✅ Welcome back, {username}! 🎉"
 
 
 def logout_user():
@@ -517,3 +574,4 @@ def reset_session():
 
 # Initialize database on import
 init_db()
+#End of Auth_logic.py
