@@ -2477,49 +2477,211 @@ with tabs[4]:
 with tabs[5]:
     st.markdown("### 📈 Comparative Disease Progression Analysis")
 
-    col1, col2 = st.columns(2)
-    with col1:
-        prev_file = st.file_uploader(
-            "Upload Previous Scan", type=["jpg", "jpeg", "png"], key="prev_scan"
-        )
-    with col2:
-        curr_file = st.file_uploader(
-            "Upload Current Scan", type=["jpg", "jpeg", "png"], key="curr_scan"
-        )
+    # Initialize session state for file uploads
+    if "prev_file_uploaded" not in st.session_state:
+        st.session_state.prev_file_uploaded = False
+        st.session_state.curr_file_uploaded = False
+        st.session_state.prev_file_data = None
+        st.session_state.curr_file_data = None
 
+    # Custom CSS for upload animation
+    st.markdown("""
+    <style>
+        @keyframes checkmark-appear {
+            0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(0deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        @keyframes circle-fill {
+            0% { 
+                background: linear-gradient(135deg, #00d4aa 0%, #00d4aa 0%, #161b22 0%);
+            }
+            100% { 
+                background: linear-gradient(135deg, #00d4aa 0%, #00d4aa 100%, #00d4aa 100%);
+            }
+        }
+        
+        .upload-success-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00d4aa 0%, #00d4aa 100%, #00d4aa 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            animation: circle-fill 0.6s ease-out;
+            box-shadow: 0 0 30px rgba(0, 212, 170, 0.4);
+        }
+        
+        .checkmark {
+            color: white;
+            font-size: 60px;
+            font-weight: bold;
+            animation: checkmark-appear 0.6s ease-out;
+        }
+        
+        .upload-filename {
+            text-align: center;
+            color: #00d4aa;
+            font-weight: 600;
+            margin-top: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .delete-btn-custom {
+            background: linear-gradient(135deg, #ff6b6b, #ff5252);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .delete-btn-custom:hover {
+            background: linear-gradient(135deg, #ff5252, #ff3333);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .upload-card {
+            background: #161b22;
+            border: 1px solid #262730;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2)
+    
+    # Previous Scan Column
+    with col1:
+        st.markdown("#### 📅 **Previous Scan**")
+        
+        if not st.session_state.prev_file_uploaded:
+            prev_file = st.file_uploader(
+                "Upload Previous Scan", 
+                type=["jpg", "jpeg", "png"], 
+                key="prev_scan",
+                label_visibility="collapsed"
+            )
+            
+            if prev_file is not None:
+                st.session_state.prev_file_uploaded = True
+                st.session_state.prev_file_data = prev_file.getvalue()
+                st.rerun()
+        else:
+            # Show success animation
+            st.markdown("""
+            <div class="upload-card">
+                <div class="upload-success-circle">
+                    <div class="checkmark">✓</div>
+                </div>
+                <div class="upload-filename">Previous Scan Uploaded ✅</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Delete button
+            if st.button("🗑️ Delete & Upload Different", key="delete_prev"):
+                st.session_state.prev_file_uploaded = False
+                st.session_state.prev_file_data = None
+                st.rerun()
+    
+    # Current Scan Column
+    with col2:
+        st.markdown("#### 📅 **Current Scan**")
+        
+        if not st.session_state.curr_file_uploaded:
+            curr_file = st.file_uploader(
+                "Upload Current Scan", 
+                type=["jpg", "jpeg", "png"], 
+                key="curr_scan",
+                label_visibility="collapsed"
+            )
+            
+            if curr_file is not None:
+                st.session_state.curr_file_uploaded = True
+                st.session_state.curr_file_data = curr_file.getvalue()
+                st.rerun()
+        else:
+            # Show success animation
+            st.markdown("""
+            <div class="upload-card">
+                <div class="upload-success-circle">
+                    <div class="checkmark">✓</div>
+                </div>
+                <div class="upload-filename">Current Scan Uploaded ✅</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Delete button
+            if st.button("🗑️ Delete & Upload Different", key="delete_curr"):
+                st.session_state.curr_file_uploaded = False
+                st.session_state.curr_file_data = None
+                st.rerun()
+
+    st.markdown("---")
     st.metric(
         "Detected Structural Change Level", "Qualitative",
         help="Based on pixel-wise structural variation between scans"
     )
 
-    if prev_file and curr_file:
-        prev_img = Image.open(io.BytesIO(prev_file.getvalue()))
-        curr_img = Image.open(io.BytesIO(curr_file.getvalue()))
+    # Process and display if both files are uploaded
+    if st.session_state.prev_file_uploaded and st.session_state.curr_file_uploaded:
+        try:
+            prev_img = Image.open(io.BytesIO(st.session_state.prev_file_data))
+            curr_img = Image.open(io.BytesIO(st.session_state.curr_file_data))
 
-        target_size = curr_img.size
-        prev_gray = preprocess_compare_image(prev_img, target_size)
-        curr_gray = preprocess_compare_image(curr_img, target_size)
+            target_size = curr_img.size
+            prev_gray = preprocess_compare_image(prev_img, target_size)
+            curr_gray = preprocess_compare_image(curr_img, target_size)
 
-        progression_map = compute_progression_map(prev_gray, curr_gray)
+            progression_map = compute_progression_map(prev_gray, curr_gray)
 
-        st.markdown("#### 🔬 Comparative Disease Progression")
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            st.markdown("**Previous Scan**")
-            st.image(prev_img,  use_column_width=True)
-        with c2:
-            st.markdown("**Current Scan**")
-            st.image(curr_img, use_column_width=True)
-        with c3:
-            st.markdown("**Detected Changes**")
-            st.image(progression_map, use_column_width=True)
+            st.markdown("#### 🔬 Comparative Disease Progression")
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                st.markdown("**Previous Scan**")
+                st.image(prev_img, use_column_width=True)
+            with c2:
+                st.markdown("**Current Scan**")
+                st.image(curr_img, use_column_width=True)
+            with c3:
+                st.markdown("**Detected Changes**")
+                st.image(progression_map, use_column_width=True)
 
-        st.info(
-            "The rightmost image highlights **structural changes over time**. "
-            "Brighter blue regions indicate stronger progression or regression."
-        )
+            st.info(
+                "The rightmost image highlights **structural changes over time**. "
+                "Brighter regions indicate stronger progression or regression."
+            )
+            
+            # Clear uploads button
+            st.markdown("---")
+            if st.button("🔄 Clear All & Start Over", key="clear_all_comp"):
+                st.session_state.prev_file_uploaded = False
+                st.session_state.curr_file_uploaded = False
+                st.session_state.prev_file_data = None
+                st.session_state.curr_file_data = None
+                st.rerun()
+                
+        except Exception as e:
+            st.error(f"❌ Error processing images: {str(e)}")
+            st.warning("Please ensure both uploads are valid image files.")
     else:
-        st.warning("Upload both previous and current scans to compare.")
+        remaining = []
+        if not st.session_state.prev_file_uploaded:
+            remaining.append("**Previous Scan**")
+        if not st.session_state.curr_file_uploaded:
+            remaining.append("**Current Scan**")
+        
+        st.warning(f"⏳ Waiting for: {', '.join(remaining)}")
+        st.info("📤 Upload both scans to begin the comparative analysis.")
 
 # ==================================================
 # COLLABORATION TAB
